@@ -366,7 +366,7 @@
     }
     .release-btn:hover { background: color-mix(in srgb, white 50%, transparent); }
 
-    .empty, .loading {
+    .empty, .loading, .list-error {
       grid-column: 1 / -1;
       text-align: center;
       padding: 50px 16px;
@@ -374,6 +374,25 @@
       color: var(--muted);
       font-size: 20px;
     }
+    .list-error {
+      background: var(--surface);
+      border: 1px solid var(--blush);
+      border-radius: 24px;
+      max-width: 520px;
+      margin: 12px auto;
+      padding: 36px 28px;
+      box-shadow: var(--shadow);
+    }
+    .list-error p {
+      margin: 0 0 12px;
+      line-height: 1.5;
+    }
+    .list-error .wait {
+      font-family: Outfit, sans-serif;
+      font-size: 15px;
+      color: var(--taupe);
+    }
+    .list-error .ghost-btn { margin-top: 10px; }
 
     footer {
       text-align: center;
@@ -749,6 +768,8 @@
     let categoria = "Todas";
     const mine = new Set(JSON.parse(sessionStorage.getItem("home-shower-mine") || "[]"));
     const useApi = () => !!(CONFIG.apiUrl && CONFIG.apiUrl.trim());
+    const LOAD_TIMEOUT_MS = 15000;
+    const RETRY_WAIT_MINUTES = 2;
 
     function hydrate(row) {
       const id = String(row.id || row.Id || "").trim();
@@ -785,29 +806,41 @@
     }
 
     async function apiGet(params) {
+      if (!useApi()) throw new Error("no-api");
       const url = new URL(CONFIG.apiUrl);
       Object.entries(params || {}).forEach(([k, v]) => url.searchParams.set(k, v));
-      const res = await fetch(url.toString(), { method: "GET" });
-      return res.json();
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), LOAD_TIMEOUT_MS);
+      try {
+        const res = await fetch(url.toString(), { method: "GET", signal: ctrl.signal });
+        if (!res.ok) throw new Error("http " + res.status);
+        return await res.json();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function showListError() {
+      regalos = [];
+      document.getElementById("statsBar").innerHTML = "";
+      document.getElementById("chips").innerHTML = "";
+      document.getElementById("grid").innerHTML = `
+        <div class="list-error" role="alert">
+          <p>No pudimos abrir la lista del hogar a tiempo.</p>
+          <p class="wait">Espera ${RETRY_WAIT_MINUTES} minutos y recarga la página para intentarlo de nuevo. Así nos aseguramos de traer la lista real, no una de prueba.</p>
+          <button class="ghost-btn" type="button" id="reloadNowBtn">Recargar ahora</button>
+        </div>`;
+      const btn = document.getElementById("reloadNowBtn");
+      if (btn) btn.addEventListener("click", () => location.reload());
     }
 
     async function load() {
-      if (!useApi()) {
-        loadLocal();
-        return;
-      }
-      try {
-        const data = await apiGet();
-        const list = Array.isArray(data.regalos) ? data.regalos : [];
-        regalos = list.length
-          ? list.map(hydrate).filter(g => g.id)
-          : GIFTS.map(g => ({ ...g, reservadoPor: "" }));
-      } catch (err) {
-        console.error(err);
-        document.getElementById("grid").innerHTML =
-          '<div class="loading">No pudimos conectar la lista. Revisa la URL de Apps Script.</div>';
-        throw err;
-      }
+      if (!useApi()) throw new Error("no-api");
+      const data = await apiGet();
+      const list = Array.isArray(data.regalos) ? data.regalos : [];
+      const next = list.map(hydrate).filter(g => g.id);
+      if (!next.length) throw new Error("empty");
+      regalos = next;
     }
 
     function escapeHtml(str) {
@@ -826,8 +859,7 @@
     }
 
     function renderChips() {
-      const source = regalos.length ? regalos : GIFTS;
-      const cats = ["Todas", ...new Set(source.map(g => g.categoria))];
+      const cats = ["Todas", ...new Set(regalos.map(g => g.categoria))];
       document.getElementById("chips").innerHTML = cats.map(c =>
         `<button class="chip ${c === categoria ? "active" : ""}" data-cat="${c}">${c}</button>`
       ).join("");
@@ -1057,6 +1089,20 @@
             await load();
             render();
           } catch (e) { /* silencio */ }
+        }, 20000);
+      }
+    })();
+  </script>
+</body>
+</html>
+     hideBusy();
+      }
+      if (useApi()) {
+        setInterval(async () => {
+          try {
+            await load();
+            render();
+          } catch (e) { /* se conserva la última lista válida */ }
         }, 20000);
       }
     })();
