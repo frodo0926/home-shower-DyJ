@@ -36,7 +36,8 @@ Sin Google Sheets, las reservas solo viven en el navegador de cada persona. Con 
 ### 2. Importa los regalos
 
 1. **Archivo → Importar → Subir** el archivo `regalos.csv` de esta carpeta.
-2. Elige **Reemplazar la hoja actual**.
+2. Tipo de separador: **Punto y coma** (`;`). No uses coma: los versículos también tienen comas y se descuadra la tabla.
+3. Elige **Reemplazar la hoja actual**.
 3. Comprueba que la fila 1 tenga exactamente estos encabezados:
 
 | id | articulo | categoria | detalle | versiculo | cita | reservadoPor | icon |
