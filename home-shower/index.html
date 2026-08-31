@@ -742,15 +742,16 @@
     const useApi = () => !!(CONFIG.apiUrl && CONFIG.apiUrl.trim());
 
     function hydrate(row) {
-      const base = GIFTS.find(g => g.id === row.id) || {};
+      const id = String(row.id || row.Id || "").trim();
+      const base = GIFTS.find(g => g.id === id) || {};
       return {
-        id: String(row.id || base.id || ""),
+        id: id || base.id || "",
         articulo: row.articulo || base.articulo || "",
         categoria: row.categoria || base.categoria || "",
         detalle: row.detalle || base.detalle || "",
         versiculo: row.versiculo || base.versiculo || "",
         cita: row.cita || base.cita || "",
-        icon: base.icon || row.icon || "gift",
+        icon: row.icon || base.icon || "gift",
         reservadoPor: row.reservadoPor ? String(row.reservadoPor).trim() : ""
       };
     }
@@ -1020,10 +1021,36 @@
     });
     document.getElementById("searchInput").addEventListener("input", render);
     document.getElementById("filterSelect").addEventListener("change", render);
-    document.getElementById("refreshBtn").addEventListener("click", () => { load(); render(); toast("Lista actualizada"); });
+    document.getElementById("refreshBtn").addEventListener("click", async () => {
+      showBusy("Actualizando la lista del hogar…");
+      try {
+        await load();
+        render();
+        toast("Lista actualizada");
+      } finally {
+        hideBusy();
+      }
+    });
 
-    load();
-    render();
+    (async function start() {
+      showBusy("Abriendo las puertas del hogar…");
+      try {
+        await load();
+      } catch (e) {
+        loadLocal();
+      } finally {
+        render();
+        hideBusy();
+      }
+      if (useApi()) {
+        setInterval(async () => {
+          try {
+            await load();
+            render();
+          } catch (e) { /* silencio */ }
+        }, 20000);
+      }
+    })();
   </script>
 </body>
 </html>
