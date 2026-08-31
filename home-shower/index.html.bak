@@ -519,7 +519,7 @@
       hosts: "Hogar Daniel y Jimena",
       storageKey: "home-shower-regalos-v1",
       /* Pega aquí la URL /exec de Google Apps Script (ver README.md) */
-      apiUrl: "https://script.google.com/macros/s/AKfycbyT4YjFX5Eix0I2C0Z4jGSjeWzFE4y6AYcUCh2rpbxcynCLhyhfJvVS3nzr2xs-0AA1Tg/exec"
+      apiUrl: ""
     };
 
     const ICONS = {
