@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catálogo de iconos · Home Shower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #FBF7F4;
+      --blush: #E8D8CE;
+      --rose: #B98F88;
+      --taupe: #7A6258;
+      --ink: #3B2F2A;
+      --surface: #FFFCFA;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Outfit, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 36px 20px 80px; }
+    a.back { color: var(--taupe); font-size: 14px; text-decoration: none; }
+    h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(32px, 5vw, 48px);
+      margin: 10px 0 6px;
+    }
+    .lead { color: var(--taupe); max-width: 640px; line-height: 1.6; margin-bottom: 22px; }
+    code, .name {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .bar {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;
+    }
+    .bar input, .bar select {
+      padding: 11px 14px;
+      border: 1.5px solid var(--blush);
+      border-radius: 12px;
+      background: var(--surface);
+      font-family: Outfit, sans-serif;
+      font-size: 15px;
+      color: var(--ink);
+    }
+    .bar input { flex: 1; min-width: 220px; }
+    .count { font-size: 13px; color: var(--taupe); align-self: center; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+    .chip {
+      border: 1px solid var(--blush);
+      background: transparent;
+      color: var(--taupe);
+      border-radius: 999px;
+      padding: 7px 12px;
+      cursor: pointer;
+      font-family: Outfit, sans-serif;
+      font-size: 13px;
+    }
+    .chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--blush);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 10px 24px rgba(59,47,42,.06);
+    }
+    .icon-well {
+      width: 120px; height: 120px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: transparent;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .icon-well img { width: 120px; height: 120px; object-fit: contain; display: block; }
+    .cat {
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--rose);
+      font-weight: 600;
+    }
+    .name {
+      font-size: 18px;
+      color: var(--ink);
+    }
+    .desc { font-size: 14px; color: var(--taupe); line-height: 1.4; min-height: 38px; }
+    .copy {
+      margin-top: auto;
+      border: none;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 10px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-family: Outfit, sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .copy:hover { background: #2a211e; }
+    .toast {
+      position: fixed; left: 50%; bottom: 22px;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--ink); color: var(--paper);
+      padding: 10px 16px; border-radius: 999px;
+      opacity: 0; transition: .3s; z-index: 20; font-size: 14px;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="index.html">← Volver al Home Shower</a>
+    <h1>Catálogo de iconos</h1>
+    <p class="lead">
+      Estos son todos los valores válidos para la columna <strong>icon</strong> de Google Sheets.
+      Pulsa <em>Copiar nombre</em> y pégalo en el Excel exactamente así, en minúsculas.
+    </p>
+    <div class="bar">
+      <input id="q" type="search" placeholder="Buscar por nombre, categoría o descripción…" />
+      <span class="count" id="count"></span>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script src="icons.js"></script>
+  <script>
+    const ICONS = window.HS_ICONS || {};
+
+    const CATALOG = [
+      { id: "bed", cat: "Hogar y textiles", desc: "Cama. Úsalo para sábanas, cubrecamas o ropa de cama." },
+      { id: "pillow", cat: "Hogar y textiles", desc: "Almohada o cojín alargado. Almohadas, rellenos." },
+      { id: "hanger", cat: "Hogar y textiles", desc: "Gancho de ropa. Closet, organizadores, perchas." },
+      { id: "towel", cat: "Hogar y textiles", desc: "Toalla colgada. Juegos de baño o toallas de mano." },
+      { id: "linen", cat: "Hogar y textiles", desc: "Mantel o tela doblada. Linos, manteles, servilletas." },
+      { id: "cushion", cat: "Hogar y textiles", desc: "Cojín cuadrado. Cojines de sala o decorativos." },
+      { id: "rug", cat: "Hogar y textiles", desc: "Alfombra ovalada. Tapetes, pie de cama, recibidor." },
+      { id: "lamp", cat: "Hogar y textiles", desc: "Lámpara de mesa. Iluminación, veladores." },
+      { id: "pot", cat: "Cocina y mesa", desc: "Olla. Batería de cocina, sartenes, calderos." },
+      { id: "plate", cat: "Cocina y mesa", desc: "Plato. Vajilla, ensaladeras, juegos de platos." },
+      { id: "cutlery", cat: "Cocina y mesa", desc: "Tenedor y cuchillo. Cubiertos, cubertería." },
+      { id: "knife", cat: "Cocina y mesa", desc: "Cuchillo de chef. Set de cuchillos, tabla." },
+      { id: "glass", cat: "Cocina y mesa", desc: "Copa. Vasos, copas, cristalería." },
+      { id: "coffee", cat: "Cocina y mesa", desc: "Taza de café. Cafetera, mugs." },
+      { id: "tea", cat: "Cocina y mesa", desc: "Tetera. Set de té, infusiones." },
+      { id: "kettle", cat: "Cocina y mesa", desc: "Hervidor. Pava eléctrica, tetera de fogón." },
+      { id: "basket", cat: "Cocina y mesa", desc: "Canasta. Panera, organizador de mimbre." },
+      { id: "blender", cat: "Cocina y mesa", desc: "Licuadora. Batidora de vaso, procesador." },
+      { id: "toaster", cat: "Cocina y mesa", desc: "Tostadora. Sandwichera pequeña." },
+      { id: "oven", cat: "Cocina y mesa", desc: "Horno. Horno tostador, freidora de aire (si no hay otro)." },
+      { id: "mixer", cat: "Cocina y mesa", desc: "Batidora de pie. Mixer, amasadora." },
+      { id: "fridge", cat: "Electrodomésticos", desc: "Nevera. Nevera, minibar." },
+      { id: "washer", cat: "Electrodomésticos", desc: "Lavadora. Lavadora o secadora." },
+      { id: "microwave", cat: "Electrodomésticos", desc: "Microondas. Horno microondas." },
+      { id: "iron", cat: "Electrodomésticos", desc: "Plancha. Plancha de ropa o vapor." },
+      { id: "vacuum", cat: "Electrodomésticos", desc: "Aspiradora. Aspiradora o robot." },
+      { id: "fan", cat: "Electrodomésticos", desc: "Ventilador. Abanico, aire." },
+      { id: "tv", cat: "Electrodomésticos", desc: "Televisor. TV, monitor." },
+      { id: "plug", cat: "Electrodomésticos", desc: "Enchufe. Extensión, multicontacto, cable." },
+      { id: "speaker", cat: "Electrodomésticos", desc: "Parlante. Audio, altavoz Bluetooth." },
+      { id: "broom", cat: "Aseo", desc: "Escoba. Escoba, recogedor." },
+      { id: "mop", cat: "Aseo", desc: "Trapero. Mopa, palo de piso." },
+      { id: "bucket", cat: "Aseo", desc: "Balde. Cubeta, palangana." },
+      { id: "soap", cat: "Aseo", desc: "Jabón. Jabón de barra, dispensador." },
+      { id: "spray", cat: "Aseo", desc: "Atomizador. Limpia vidrios, desinfectante." },
+      { id: "sponge", cat: "Aseo", desc: "Esponja. Esponjas, paños, fibra." },
+      { id: "trash", cat: "Aseo", desc: "Caneca. Basurero, papelera." },
+      { id: "detergent", cat: "Aseo", desc: "Botella de detergente. Jabón líquido, suavizante." },
+      { id: "shower", cat: "Aseo", desc: "Ducha. Set de baño, cortina, duchador." },
+      { id: "hammer", cat: "Herramientas", desc: "Martillo. Martillo, kit básico." },
+      { id: "wrench", cat: "Herramientas", desc: "Llave inglesa. Llaves, tuercas." },
+      { id: "drill", cat: "Herramientas", desc: "Taladro. Taladro, atornillador eléctrico." },
+      { id: "screwdriver", cat: "Herramientas", desc: "Destornillador. Destornilladores." },
+      { id: "toolbox", cat: "Herramientas", desc: "Caja de herramientas. Kit o maletín." },
+      { id: "saw", cat: "Herramientas", desc: "Sierra. Serrucho, sierra de mano." },
+      { id: "pliers", cat: "Herramientas", desc: "Alicate. Pinzas para cortes y agarre." },
+      { id: "ruler", cat: "Herramientas", desc: "Regla. Metro, nivel, medición." },
+      { id: "ladder", cat: "Herramientas", desc: "Escalera. Escalera de aluminio o tijera." },
+      { id: "paint", cat: "Herramientas", desc: "Cubeta de pintura. Pintura, brochas, rodillo." },
+      { id: "scissors", cat: "Herramientas", desc: "Tijeras. Tijeras de cocina o de tela." },
+      { id: "plant", cat: "Jardín", desc: "Planta. Interior, maceta, suculenta." },
+      { id: "watering", cat: "Jardín", desc: "Regadera. Riego, jardinería." },
+      { id: "rake", cat: "Jardín", desc: "Rastrillo. Patio, jardín." },
+      { id: "gift", cat: "Bonos y regalos", desc: "Caja de regalo. Bono genérico, detalle sorpresa." },
+      { id: "envelope", cat: "Bonos y regalos", desc: "Sobre. Aporte en efectivo, bono impreso." },
+      { id: "card", cat: "Bonos y regalos", desc: "Tarjeta. Bono de almacén, gift card." },
+      { id: "coin", cat: "Bonos y regalos", desc: "Moneda. Aporte de dinero, cuota." },
+      { id: "tag", cat: "Bonos y regalos", desc: "Etiqueta. Vale, ticket de regalo." },
+      { id: "heart", cat: "Bonos y regalos", desc: "Corazón. Detalle especial, algo hecho con cariño." },
+      { id: "bow", cat: "Bonos y regalos", desc: "Moño. Envolturas, lazo de regalo." },
+      { id: "box", cat: "Bonos y regalos", desc: "Caja cerrada. Paquete, kit, mistery box." },
+      { id: "art", cat: "Otros", desc: "Cuadro. Lámina, marco, foto." },
+      { id: "candle", cat: "Otros", desc: "Vela. Velas, aroma, difusor." },
+      { id: "home", cat: "Otros", desc: "Casita. Genérico de hogar." },
+      { id: "key", cat: "Otros", desc: "Llave. Cerradura, seguridad, copia de llaves." },
+      { id: "clock", cat: "Otros", desc: "Reloj. Reloj de pared o despertador." },
+      { id: "book", cat: "Otros", desc: "Libro. Biblia, recetario, bitácora." },
+      { id: "umbrella", cat: "Otros", desc: "Paraguas. Sombrilla." },
+      { id: "star", cat: "Otros", desc: "Estrella. Destacado, detalle especial." }
+    ];
+
+    let filtro = "Todas";
+    const cats = ["Todas", ...new Set(CATALOG.map(i => i.cat))];
+
+    function toast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 1800);
+    }
+
+    async function copyName(id) {
+      try {
+        await navigator.clipboard.writeText(id);
+        toast("Copiado para Excel: " + id);
+      } catch (e) {
+        prompt("Copia este nombre para la columna icon:", id);
+      }
+    }
+
+    function render() {
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      document.getElementById("chips").innerHTML = cats.map(c =>
+        `<button class="chip ${c === filtro ? "active" : ""}" data-cat="${c}">${c}</button>`
+      ).join("");
+      document.querySelectorAll(".chip").forEach(b => b.onclick = () => { filtro = b.dataset.cat; render(); });
+
+      const items = CATALOG.filter(i => {
+        if (filtro !== "Todas" && i.cat !== filtro) return false;
+        if (!q) return true;
+        return (i.id + " " + i.cat + " " + i.desc).toLowerCase().includes(q);
+      });
+      document.getElementById("count").textContent = items.length + " iconos";
+      document.getElementById("grid").innerHTML = items.map(i => `
+        <article class="card">
+          <div class="icon-well">
+            <img src="images/icons/${i.id}.png" alt="${i.id}" onerror="this.onerror=null;this.src='images/icons/gift.png'">
+          </div>
+          <div class="cat">${i.cat}</div>
+          <div class="name">${i.id}</div>
+          <p class="desc">${i.desc}<br><span style="font-size:12px">Excel: columna icon = <strong>${i.id}</strong></span></p>
+          <button class="copy" type="button" data-id="${i.id}">Copiar nombre para Excel</button>
+        </article>
+      `).join("");
+      document.querySelectorAll(".copy").forEach(b => b.onclick = () => copyName(b.dataset.id));
+      document.querySelectorAll(".card").forEach(card => {
+        card.style.cursor = "pointer";
+        card.onclick = (e) => {
+          if (e.target.closest(".copy")) return;
+          const id = card.querySelector(".copy").dataset.id;
+          copyName(id);
+        };
+      });
+    }
+
+    document.getElementById("q").addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>
