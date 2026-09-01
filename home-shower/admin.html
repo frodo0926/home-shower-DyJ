@@ -115,7 +115,6 @@
     </div>
   </div>
 
-  <script src="admin-config.js"></script>
   <script>
     const CONFIG = {
       /* Misma URL /exec que en index.html */
@@ -145,25 +144,31 @@
     }
 
     async function login() {
-      const cfg = window.HS_ADMIN || {};
-      const uh = await sha256hex(document.getElementById("user").value.trim());
-      const ph = await sha256hex(document.getElementById("pass").value);
-      if (uh !== cfg.user || ph !== cfg.pass) {
+      if (!CONFIG.apiUrl) {
+        document.getElementById("loginErr").textContent = "Falta pegar la URL /exec en CONFIG.apiUrl de esta página.";
         showLogin(true);
         return;
       }
+      const uh = await sha256hex(document.getElementById("user").value.trim());
+      const ph = await sha256hex(document.getElementById("pass").value);
       sessionStorage.setItem("hs-admin", JSON.stringify({ uh, ph }));
+      const ok = await loadLogs();
+      if (!ok) {
+        sessionStorage.removeItem("hs-admin");
+        document.getElementById("loginErr").textContent = "Usuario o clave no coinciden.";
+        showLogin(true);
+        return;
+      }
       document.getElementById("pass").value = "";
       showLogs();
-      await loadLogs();
     }
 
     async function loadLogs() {
       const c = creds();
       const box = document.getElementById("tableBox");
-      if (!CONFIG.apiUrl) {
+      if (!CONFIG.apiUrl || !c) {
         box.innerHTML = '<p class="empty">Falta pegar la URL /exec en CONFIG.apiUrl de esta página.</p>';
-        return;
+        return false;
       }
       box.innerHTML = '<p class="empty">Leyendo la bitácora…</p>';
       try {
@@ -176,12 +181,12 @@
         if (!data.success) {
           sessionStorage.removeItem("hs-admin");
           showLogin(true);
-          return;
+          return false;
         }
         const rows = data.eventos || [];
         if (!rows.length) {
           box.innerHTML = '<p class="empty">Aún no hay movimientos. Cuando alguien elija o devuelva un detalle, aparecerá aquí.</p>';
-          return;
+          return true;
         }
         box.innerHTML = `<table>
           <thead><tr><th>Fecha</th><th>Acción</th><th>Detalle</th><th>Nombre</th><th>Id</th></tr></thead>
@@ -193,8 +198,10 @@
             <td>${esc(r.id)}</td>
           </tr>`).join("")}</tbody>
         </table>`;
+        return true;
       } catch (e) {
         box.innerHTML = '<p class="empty">No se pudo leer la bitácora. Revisa la URL /exec.</p>';
+        return false;
       }
     }
 
