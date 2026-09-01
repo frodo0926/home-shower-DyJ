@@ -126,6 +126,64 @@
       font-size: 15.5px;
     }
 
+    .bono-card {
+      margin: -8px auto 36px;
+      max-width: 720px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      backdrop-filter: blur(8px);
+      border: 1px solid color-mix(in srgb, var(--khaki) 70%, white);
+      border-radius: 24px;
+      padding: 20px 24px 22px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15.5px;
+    }
+    .bono-card p { margin: 0; }
+    .bono-card .hl {
+      color: var(--rose);
+      font-weight: 600;
+      font-style: italic;
+    }
+    .pay-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin: 14px 0 8px;
+    }
+    .pay-item {
+      min-width: 140px;
+      max-width: 180px;
+    }
+    .pay-item img {
+      width: 72px;
+      height: 72px;
+      max-width: 72px;
+      max-height: 72px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 8px;
+      background: transparent;
+    }
+    .pay-item p {
+      margin: 0;
+      font-size: 14.5px;
+      color: var(--taupe);
+    }
+    .acct {
+      font-weight: 700;
+      color: var(--olive);
+      letter-spacing: 0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+    .bono-note {
+      margin: 12px 0 0 !important;
+      font-size: 14.5px;
+    }
+
     .stats {
       display: flex;
       justify-content: center;
@@ -255,15 +313,26 @@
     }
 
     .icon-well {
-      width: 64px;
-      height: 64px;
+      width: 148px;
+      height: 148px;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      background: color-mix(in srgb, var(--sage) 35%, var(--paper));
-      color: var(--olive);
-      margin-bottom: 4px;
+      background: transparent;
+      margin: 4px auto 2px;
+      overflow: hidden;
     }
+    .icon-well img, .gift-icon {
+      width: 148px;
+      height: 148px;
+      object-fit: contain;
+      display: block;
+    }
+    .face-front {
+      text-align: center;
+      align-items: center;
+    }
+    .face-front .cat { align-self: center; }
     .cat {
       align-self: flex-start;
       font-size: 11px;
@@ -355,7 +424,7 @@
     }
     .release-btn:hover { background: color-mix(in srgb, white 50%, transparent); }
 
-    .empty, .loading {
+    .empty, .loading, .list-error {
       grid-column: 1 / -1;
       text-align: center;
       padding: 50px 16px;
@@ -363,6 +432,25 @@
       color: var(--muted);
       font-size: 20px;
     }
+    .list-error {
+      background: var(--surface);
+      border: 1px solid var(--blush);
+      border-radius: 24px;
+      max-width: 520px;
+      margin: 12px auto;
+      padding: 36px 28px;
+      box-shadow: var(--shadow);
+    }
+    .list-error p {
+      margin: 0 0 12px;
+      line-height: 1.5;
+    }
+    .list-error .wait {
+      font-family: Outfit, sans-serif;
+      font-size: 15px;
+      color: var(--taupe);
+    }
+    .list-error .ghost-btn { margin-top: 10px; }
 
     footer {
       text-align: center;
@@ -460,84 +548,66 @@
       background: var(--surface);
       border: 1px solid var(--blush);
       border-radius: 24px;
-      padding: 28px 32px 22px;
+      padding: 32px 28px 24px;
       text-align: center;
       box-shadow: 0 24px 50px rgba(59, 47, 42, 0.18);
-      min-width: 220px;
+      width: min(340px, 92vw);
     }
     .house-loader {
       position: relative;
-      width: 148px;
-      height: 148px;
-      margin: 0 auto 12px;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 14px;
     }
     .house-loader img {
       position: absolute;
-      inset: 26px;
-      width: 96px;
-      height: 96px;
+      left: 50%;
+      top: 50%;
+      width: 118px;
+      height: 118px;
+      margin: 0;
+      transform: translate(-50%, -50%);
       object-fit: contain;
       background: transparent;
-      animation: house-breathe 1.8s ease-in-out infinite;
     }
     .house-trace {
       position: absolute;
       inset: 0;
-      width: 148px;
-      height: 148px;
+      width: 180px;
+      height: 180px;
       overflow: visible;
+      pointer-events: none;
     }
-    .house-trace path {
+    .house-trace circle {
       fill: none;
       stroke: var(--rose);
       stroke-width: 2.4;
       stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 420;
-      stroke-dashoffset: 420;
-      animation: house-draw 2.2s cubic-bezier(.45,.05,.55,.95) infinite;
-    }
-    .window-glow {
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      left: 86px;
-      top: 72px;
-      border-radius: 3px;
-      background: #E8D8CE;
-      opacity: 0.35;
-      animation: window-pulse 1.4s ease-in-out infinite;
-      pointer-events: none;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: house-draw 3s ease-in-out infinite;
     }
     .busy-msg {
       font-family: Fraunces, Georgia, serif;
       font-style: italic;
       color: var(--taupe);
       font-size: 16px;
+      line-height: 1.4;
       margin: 0;
     }
     @keyframes house-draw {
-      0% { stroke-dashoffset: 420; }
+      0% { stroke-dashoffset: 1; }
       45% { stroke-dashoffset: 0; }
       55% { stroke-dashoffset: 0; }
-      100% { stroke-dashoffset: -420; }
-    }
-    @keyframes house-breathe {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
-    @keyframes window-pulse {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.85; box-shadow: 0 0 12px rgba(185, 143, 136, 0.55); }
+      100% { stroke-dashoffset: 1; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .flip { transition: none; }
-      .house-trace path, .house-loader img, .window-glow { animation: none; }
-      .house-trace path { stroke-dashoffset: 0; }
+      .house-trace circle { animation: none; stroke-dashoffset: 0; }
     }
     @media (max-width: 640px) {
-      .flip { height: 460px; }
+      .flip { height: 520px; }
       .intro-card { margin-top: 18px; }
     }
   </style>
@@ -550,8 +620,9 @@
       <p class="home-name">Hogar Daniel y Jimena</p>
       <img class="branch" src="images/rama-oliva.png" alt="" />
       <p class="lead">
-        Gracias por venir a bendecir esta casa. Elige un detalle para el hogar:
-        la tarjeta se voltea con un versículo y nuestro agradecimiento, escrito para ti.
+        Estamos muy felices de comenzar esta nueva etapa juntos y nos encantaría
+        celebrarla contigo. Tu compañía y buenos deseos significan mucho para nosotros
+        mientras preparamos nuestro hogar y nuestra vida juntos.
       </p>
     </header>
     <div class="hero-art-wrap">
@@ -560,9 +631,29 @@
 
     <main class="wrap">
       <div class="intro-card">
-        Cada regalo es una semilla en este nido. Si eliges uno, la tarjeta gira
-        y queda a tu nombre, con un versículo. Si cambias de parecer, puedes
-        devolverla y vuelve a su cara original — para que otro ser querido la tome.
+        Cada detalle es una semilla para nuestro hogar. Al seleccionar un regalo, la tarjeta girará y quedará a tu nombre. Si cambias de parecer, no te preocupes: puedes devolverlo para que otro ser querido lo elija y tú puedas escoger otro.
+      </div>
+
+      <div class="bono-card">
+        <p>
+          ¡Gracias por tu generosidad! Si elegiste la opción de
+          <strong class="hl">bono</strong>, puedes hacer tu transferencia a
+          cualquiera de estas cuentas:
+        </p>
+        <div class="pay-row">
+          <div class="pay-item">
+            <img src="images/logo-nequi.png" alt="Nequi" width="72" height="72" />
+            <p>Nequi: <span class="acct">3102050306</span></p>
+          </div>
+          <div class="pay-item">
+            <img src="images/logo-breb.png" alt="Llave Bre-B" width="72" height="72" />
+            <p>Llave Bre-B: <span class="acct">3115633346</span></p>
+          </div>
+        </div>
+        <p class="bono-note">
+          Por favor, no olvides compartirnos el comprobante y llevar un sobrecito
+          con una nota o la descripción de tu detalle. ¡Agradecemos enormemente tu cariño!
+        </p>
       </div>
 
       <div class="stats" id="statsBar"></div>
@@ -583,7 +674,7 @@
       <div class="grid" id="grid"></div>
 
       <footer>Hogar Daniel y Jimena · “Yo y mi casa serviremos a Jehová.” Josué 24:15<br />
-        <a href="catalogo-iconos.html" style="color:inherit;opacity:.75">Catálogo de iconos para Excel</a>
+        <a href="catalogo-iconos.html" style="color:inherit;opacity:.75">H & R Soluciones</a>
       </footer>
     </main>
   </div>
@@ -593,11 +684,11 @@
       <img src="images/sello-hogar.png" alt="" />
       <h3>¿Quién regala este detalle?</h3>
       <p class="item" id="modalItem"></p>
-      <p class="hint">Escribe tu nombre para voltear la tarjeta y dejar el versículo a tu nombre.</p>
+      <p class="hint">Escribe tu nombre para sleccionar este detalle.</p>
       <input id="modalName" type="text" maxlength="60" placeholder="Tu nombre completo" autocomplete="name" />
       <div class="modal-actions">
         <button class="btn-cancel" id="modalCancel" type="button">Cancelar</button>
-        <button class="btn-ok" id="modalOk" type="button">Elegir y voltear</button>
+        <button class="btn-ok" id="modalOk" type="button">Elegir detalle</button>
       </div>
     </div>
   </div>
@@ -605,16 +696,95 @@
   <div class="busy" id="busy" aria-live="polite" aria-busy="true">
     <div class="busy-card">
       <div class="house-loader">
-        <svg class="house-trace" viewBox="0 0 148 148" aria-hidden="true">
-          <path d="M28 72 L74 28 L102 52 V38 H114 V62 L120 72 V122 H28 Z" />
+        <svg class="house-trace" viewBox="0 0 180 180" aria-hidden="true">
+          <circle cx="90" cy="90" r="78" pathLength="1" />
         </svg>
         <img src="images/loader-casa.png" alt="" />
-        <span class="window-glow"></span>
       </div>
       <p class="busy-msg" id="busyMsg">Guardando tu detalle en el hogar…</p>
     </div>
   </div>
 
+  <script>
+/* Iconos estilo línea redondeada (Lucide). Nombre = valor de la columna icon en Sheets. */
+(function () {
+  const s = (inner) =>
+    `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+
+  window.HS_ICONS = {
+    bed: s('<path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/>'),
+    pillow: s('<rect x="3" y="8" width="18" height="10" rx="4"/>'),
+    hanger: s('<path d="M12 7a2 2 0 1 0-2-2c0 1.5 2 2 2 3L3 18h18L12 8"/>'),
+    towel: s('<path d="M10 4 8 6"/><path d="M17 19v2"/><path d="M2 12h20"/><path d="M7 19v2"/><path d="M9 5 7.62 3.62A2.12 2.12 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/>'),
+    linen: s('<rect x="4" y="5" width="16" height="14" rx="1"/><path d="M4 9h16M9 5v14"/>'),
+    cushion: s('<rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 9h6v6H9z"/>'),
+    rug: s('<ellipse cx="12" cy="13" rx="9" ry="6"/><path d="M5 13h14"/>'),
+    lamp: s('<path d="M8 10h8l-1 7H9L8 10z"/><path d="M12 3v7"/><path d="M9 22h6"/><path d="M12 17v5"/>'),
+    pot: s('<path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m9 6.5-.4-1.7a2 2 0 1 1 3.9-1l.4 1.8"/><path d="m15.1 4.3.4-1.7a2 2 0 1 1 3.8 1l-.4 1.7"/>'),
+    plate: s('<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>'),
+    cutlery: s('<path d="M8 3v18"/><path d="M6 3c0 3 4 3 4 6v2H6"/><path d="M16 3v7c0 2 2 3 2 3v8"/><path d="M16 3c2 0 3 2 3 5"/>'),
+    knife: s('<path d="M3 18 16 5l3 3-8 13c-3 1-6-1-8-3z"/>'),
+    glass: s('<path d="M7 3h10l-1.5 10H8.5L7 3z"/><path d="M12 13v7"/><path d="M8 21h8"/>'),
+    coffee: s('<path d="M6 8h12v7a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V8z"/><path d="M18 10h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M9 3v3M15 3v3"/>'),
+    tea: s('<path d="M6 9h11v8a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V9z"/><path d="M17 11h2.5a2.5 2.5 0 0 1 0 5H17"/>'),
+    kettle: s('<path d="M6 10h11l-1 10H7L6 10z"/><path d="M17 12h3a3 3 0 0 1 0 6h-2"/><path d="M12 6v4M10 6h4"/>'),
+    basket: s('<path d="M4 10h16l-2 11H6L4 10z"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'),
+    blender: s('<path d="M9 3h7l-1 9H10L9 3z"/><rect x="8" y="12" width="9" height="9" rx="1"/><path d="M11 16h3"/>'),
+    toaster: s('<rect x="3" y="11" width="18" height="9" rx="2"/><path d="M7 11V7h3v4M14 11V7h3v4M19 15h2"/>'),
+    oven: s('<rect x="4" y="4" width="16" height="16" rx="1"/><rect x="7" y="11" width="10" height="6"/><circle cx="8" cy="8" r="0.8"/><circle cx="12" cy="8" r="0.8"/><circle cx="16" cy="8" r="0.8"/>'),
+    mixer: s('<path d="M10 3h6v7h-2L12 21H9l2-11H8V7z"/><path d="M8 21h8"/>'),
+    fridge: s('<rect x="7" y="2" width="10" height="20" rx="1"/><path d="M7 10h10M10 5v2M10 14v3"/>'),
+    washer: s('<rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="13" r="5"/><circle cx="12" cy="13" r="2"/><path d="M8 6h2M12 6h2"/>'),
+    microwave: s('<rect x="2" y="7" width="20" height="12" rx="1"/><rect x="5" y="10" width="10" height="6"/><path d="M18 10v2M18 14v2"/>'),
+    iron: s('<path d="M4 18h14a4 4 0 0 0 0-8H12L7 6H4v12z"/><path d="M8 14h4"/>'),
+    vacuum: s('<circle cx="9" cy="16" r="5"/><path d="M13 14 21 6M18 5h4v4M7 16h4"/>'),
+    fan: s('<circle cx="12" cy="11" r="2.5"/><path d="M12 8.5c3.5-5 8-1.5 5 2.5"/><path d="M12 13.5c-3.5 5-8 1.5-5-2.5"/><path d="M14.5 11c5 3.5 1.5 8-2.5 5"/><path d="M12 14v7M9 22h6"/>'),
+    tv: s('<rect x="3" y="5" width="18" height="12" rx="1"/><path d="M8 21h8M12 17v4"/>'),
+    plug: s('<path d="M8 2v7M16 2v7"/><path d="M6 9h12v5a6 6 0 0 1-12 0V9z"/><path d="M12 20v3"/>'),
+    speaker: s('<rect x="7" y="2" width="10" height="20" rx="2"/><circle cx="12" cy="15" r="3.5"/><circle cx="12" cy="7" r="1.2"/>'),
+    broom: s('<path d="M12 2v13"/><path d="M6 22c1-6 4-8 6-8s5 2 6 8H6z"/>'),
+    mop: s('<path d="M12 2v14"/><path d="M6 20 9 15h6l3 5H6z"/><path d="M8 20v3M12 20v3M16 20v3"/>'),
+    bucket: s('<path d="M6 8h12l-2 13H8L6 8z"/><path d="M8 8V5h8v3"/>'),
+    soap: s('<rect x="4" y="11" width="16" height="8" rx="3"/><path d="M10 11V8a3 3 0 0 1 6 0"/><circle cx="17" cy="6" r="1.5"/>'),
+    spray: s('<rect x="8" y="9" width="8" height="13" rx="2"/><path d="M10 9V6h4v3M14 6h5M17 4v2M19 7h3"/>'),
+    sponge: s('<rect x="3" y="8" width="18" height="10" rx="3"/><path d="M8 12h2M14 14h2"/>'),
+    trash: s('<path d="M5 7h14l-1.4 14H6.4L5 7z"/><path d="M3 7h18M9 7V4h6v3M10 11v6M14 11v6"/>'),
+    detergent: s('<path d="M9 4h6l1 4H8L9 4z"/><rect x="7" y="8" width="10" height="14" rx="2"/><path d="M10 14h4"/>'),
+    shower: s('<path d="M4 4h10a6 6 0 0 1 6 6v2H12"/><path d="M8 16v5M12 17v5M16 16v5M5 18v3"/>'),
+    hammer: s('<path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m21.42 6.64-1.06-1.06a2.12 2.12 0 0 0-3 0l-1.06 1.06 4.12 4.12 1.06-1.06a2.12 2.12 0 0 0 0-3z"/>'),
+    wrench: s('<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'),
+    drill: s('<path d="M14 9h.01"/><rect x="2" y="8" width="12" height="8" rx="1"/><path d="M14 12h8"/><path d="M17 8v8"/><path d="M6 8V5h4v3"/>'),
+    screwdriver: s('<path d="m2 22 8-8"/><path d="m10 14 4 4"/><path d="m14 10 8-8"/><path d="m18 2 4 4"/>'),
+    toolbox: s('<rect x="2" y="10" width="20" height="10" rx="1"/><path d="M8 10V7h8v3M2 15h20"/>'),
+    saw: s('<path d="M3 20 19 7l-3-3L3 14v6z"/><path d="m6 15 2 2M9 13l2 2M12 11l2 2"/>'),
+    ladder: s('<path d="M8 3v18M16 3v18M8 7h8M8 12h8M8 17h8"/>'),
+    paint: s('<path d="M6 12h12l-1 9H7L6 12z"/><path d="M10 12V7h5l2 3"/>'),
+    scissors: s('<circle cx="6" cy="8" r="2.5"/><circle cx="6" cy="16" r="2.5"/><path d="m8.5 9.5 12.5 11M8.5 14.5 21 4"/>'),
+    pliers: s('<path d="m7 21 4-8"/><path d="m17 21-4-8"/><path d="M12 13V7"/><path d="M8 4h8l-1 5H9L8 4z"/>'),
+    ruler: s('<path d="M4 19 19 4l3 3L7 22 4 19z"/><path d="m8 15 1 1M11 12l1 1M14 9l1 1"/>'),
+    plant: s('<path d="M12 15c0-7 6-9 6-9s0 7-6 9c-6-2-6-9-6-9s6 2 6 9z"/><path d="M8 22h8l-1-5H9l-1 5z"/>'),
+    watering: s('<path d="M5 12h10l1 9H6L5 12z"/><path d="M15 14h5l-2 5h-2"/><path d="M10 8c0-3 6-3 6 0"/>'),
+    rake: s('<path d="M12 2v15"/><path d="M6 22v-6h12v6M6 19h12M9 16v6M15 16v6"/>'),
+    gift: s('<rect x="3" y="10" width="18" height="11" rx="1"/><path d="M12 10v11M3 14h18"/><path d="M12 10c-3-5-7-3-4.5 0H12c3-3-1.5-5-4.5 0"/>'),
+    envelope: s('<rect x="3" y="6" width="18" height="12" rx="1"/><path d="m3 8 9 7 9-7"/>'),
+    card: s('<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20M6 15h6"/>'),
+    coin: s('<circle cx="12" cy="12" r="8"/><path d="M12 7v10M9 9h4.5a2 2 0 0 1 0 4H9"/>'),
+    tag: s('<path d="M12 3h8v8L12 21l-8-8 8-10z"/><circle cx="16" cy="8" r="1.4"/>'),
+    heart: s('<path d="M12 21s-8-5.5-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 10c0 5.5-8 11-8 11z"/>'),
+    bow: s('<path d="M12 12 4 7v10l8-5zM12 12l8-5v10l-8-5z"/><circle cx="12" cy="12" r="1.6"/>'),
+    box: s('<path d="M3 8 12 3l9 5v10l-9 5-9-5V8z"/><path d="M3 8l9 5 9-5M12 13v10"/>'),
+    art: s('<rect x="4" y="4" width="16" height="16" rx="1"/><path d="m4 16 5-5 4 4 3-3 4 4"/>'),
+    candle: s('<path d="M8 11h8v10H8z"/><path d="M12 11c0-3 3-4 3-7"/>'),
+    home: s('<path d="M3 11 12 3l9 8"/><path d="M6 10v10h12V10"/>'),
+    key: s('<circle cx="8" cy="12" r="4"/><path d="M11 12h10l-2 3h-3l-1 3h-2"/>'),
+    clock: s('<circle cx="12" cy="13" r="8"/><path d="M12 13V8M12 13l4 3"/>'),
+    book: s('<path d="M4 5h7c2 0 3 1 3 3v13H7c-2 0-3-1-3-3V5z"/><path d="M14 8h6v13h-6"/>'),
+    umbrella: s('<path d="M4 13a8 8 0 0 1 16 0H4z"/><path d="M12 13v7a2 2 0 0 0 4 0"/>'),
+    star: s('<path d="m12 3 2.4 6.2H21l-5.2 3.8 2 6.2L12 15.5 6.2 19.2l2-6.2L3 9.2h6.6z"/>')
+  };
+})();
+
+  </script>
   <script>
     /* ========= PERSONALIZA AQUÍ ========= */
     const CONFIG = {
@@ -624,75 +794,11 @@
       apiUrl: "https://script.google.com/macros/s/AKfycbyT4YjFX5Eix0I2C0Z4jGSjeWzFE4y6AYcUCh2rpbxcynCLhyhfJvVS3nzr2xs-0AA1Tg/exec"
     };
 
-    const ICONS = {
-      bed: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 18V8.5A1.5 1.5 0 0 1 5.5 7h7A1.5 1.5 0 0 1 14 8.5V12h10v6"/><path d="M3 18h24M6 18v4M24 18v4"/></svg>',
-      towel: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6h10a4 4 0 0 1 4 4v14H12a4 4 0 0 1-4-4V6z"/><path d="M8 10h8"/></svg>',
-      pot: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 13h16l-1.2 10.5a2 2 0 0 1-2 1.7H10.2a2 2 0 0 1-2-1.7L7 13z"/><path d="M5 13h20M12 8c0-2 6-2 6 0"/></svg>',
-      plate: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="15" cy="15" r="10"/><circle cx="15" cy="15" r="5"/></svg>',
-      coffee: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 10h14v8a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5v-8z"/><path d="M21 12h3a3 3 0 0 1 0 6h-3"/><path d="M11 5v3M16 5v3"/></svg>',
-      cutlery: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5v20M7 5c0 3 4 3 4 6v2H7"/><path d="M20 5v8c0 2-1.5 3-3 3v9"/><path d="M17 5v8"/></svg>',
-      linen: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h18v16H6z"/><path d="M6 12h18M10 8v16"/></svg>',
-      lamp: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 12h10l-1.5 8h-7L10 12z"/><path d="M15 4v8M11 28h8M15 20v8"/></svg>',
-      cushion: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="7" width="16" height="16" rx="4"/><path d="M11 11h8v8h-8z"/></svg>',
-      glass: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5h12l-1.5 10H10.5L9 5z"/><path d="M15 15v8M11 25h8"/></svg>',
-      plant: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 18c0-8 6-10 6-10s0 8-6 10c-6-2-6-10-6-10s6 2 6 10z"/><path d="M11 26h8l-1  -4h-6l-1 4z"/></svg>',
-      art: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="7" width="18" height="16" rx="1"/><path d="M6 19l5-5 4 4 3-3 6 6"/></svg>',
-      knife: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 22l14-14 2 2-8 16c-3 1-6-1-8-4z"/></svg>',
-      candle: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 14h10v12H10z"/><path d="M15 14c0-4 3-5 3-8"/></svg>',
-      rug: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="15" cy="16" rx="11" ry="7"/><path d="M7 16h16"/></svg>',
-      tea: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12h13v9a4 4 0 0 1-4 4h-5a4 4 0 0 1-4-4v-9z"/><path d="M21 14h2.5a2.5 2.5 0 1 1 0 5H21"/></svg>',
-      basket: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 14h18l-2 10H8L6 14z"/><path d="M10 14V9a5 5 0 0 1 10 0v5"/></svg>',
-      gift: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="12" width="18" height="13" rx="1"/><path d="M15 12v13M6 17h18"/><path d="M15 12c-3-5-8-3-5 0h5c3-3-2-5-5 0"/></svg>',
-      hammer: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 11h10l2 2-9 9-3-3 8-8"/><path d="M16 7l5 5M19 4l5 5-3 3-5-5z"/></svg>',
-      wrench: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 7a4 4 0 0 0-5.6 5.6L6 21l3 3 8.4-8.4A4 4 0 0 0 20 7z"/><circle cx="19" cy="8" r="1.2"/></svg>',
-      drill: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="11" width="14" height="8" rx="1"/><path d="M18 14h8M18 16h6M8 11V8h6v3"/></svg>',
-      screwdriver: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 4l4 4-10 10H4v-4L14 4z"/><path d="M16 6l6 6"/></svg>',
-      toolbox: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="12" width="22" height="12" rx="1"/><path d="M10 12V9h10v3M4 17h22"/></svg>',
-      saw: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 22l18-14-3-3L5 16v6z"/><path d="M8 16l2 2M11 14l2 2M14 12l2 2"/></svg>',
-      fridge: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="4" width="14" height="22" rx="1"/><path d="M8 12h14M11 7v2M11 16v3"/></svg>',
-      washer: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="4" width="18" height="22" rx="1"/><circle cx="15" cy="16" r="6"/><circle cx="15" cy="16" r="2"/><path d="M10 7h2M14 7h2"/></svg>',
-      microwave: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="24" height="14" rx="1"/><rect x="6" y="11" width="12" height="8"/><path d="M22 12v2M22 16v2"/></svg>',
-      blender: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 4h8l-1 10H12L11 4z"/><rect x="9" y="14" width="12" height="10" rx="1"/><path d="M13 18h4"/></svg>',
-      toaster: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="12" width="20" height="10" rx="2"/><path d="M9 12V8h3v4M18 12V8h3v4M22 16h2"/></svg>',
-      oven: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="6" width="20" height="18" rx="1"/><rect x="8" y="13" width="14" height="8"/><circle cx="10" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><circle cx="20" cy="10" r="1"/></svg>',
-      iron: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 20h16a4 4 0 0 0 0-8H14L8 8H6v12z"/><path d="M10 16h4"/></svg>',
-      vacuum: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="18" r="6"/><path d="M16 16l8-8M21 7h5v4"/><path d="M8 18h6"/></svg>',
-      fan: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="15" cy="14" r="3"/><path d="M15 11c4-6 10-2 6 3M15 17c-4 6-10 2-6-3M18 14c6 4 2 10-3 6"/><path d="M15 17v7M12 26h6"/></svg>',
-      tv: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="6" width="22" height="14" rx="1"/><path d="M11 24h8M15 20v4"/></svg>',
-      mixer: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4h8v8h-3l-2 12h-4l2-12H9V8z"/><path d="M10 22h10"/></svg>',
-      kettle: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12h12l-1 10H9L8 12z"/><path d="M20 14h3a3 3 0 1 1 0 6h-2M14 8v4M12 8h4"/></svg>',
-      broom: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3v14"/><path d="M8 26c1-6 4-9 6-9s5 3 6 9H8z"/></svg>',
-      mop: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 3v16"/><path d="M8 24l3-5h8l3 5H8z"/><path d="M10 24v3M15 24v3M20 24v3"/></svg>',
-      bucket: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 10h14l-2 14H10L8 10z"/><path d="M10 10V7h10v3"/></svg>',
-      soap: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="12" width="18" height="10" rx="3"/><path d="M12 12V9a3 3 0 0 1 6 0"/><circle cx="20" cy="8" r="2"/></svg>',
-      spray: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="10" y="10" width="10" height="16" rx="2"/><path d="M13 10V7h4v3M17 7h5M20 5v2M22 8h3"/></svg>',
-      sponge: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="10" width="20" height="12" rx="3"/><path d="M10 14h2M16 16h2"/></svg>',
-      trash: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 9h16l-1.5 16H8.5L7 9z"/><path d="M5 9h20M12 9V6h6v3M13 13v8M17 13v8"/></svg>',
-      detergent: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 6h8l1 4H10l1-4z"/><rect x="9" y="10" width="12" height="16" rx="2"/><path d="M13 16h4"/></svg>',
-      envelope: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="8" width="22" height="14" rx="1"/><path d="M4 10l11 8 11-8"/></svg>',
-      card: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="8" width="22" height="14" rx="2"/><path d="M4 13h22M8 18h6"/></svg>',
-      coin: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="15" cy="15" r="9"/><path d="M15 10v10M12 12h5a2 2 0 0 1 0 4h-5"/></svg>',
-      tag: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 6h10v10L15 25l-9-9 8-10z"/><circle cx="20" cy="11" r="1.5"/></svg>',
-      heart: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 25s-9-6.5-9-13a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-9 13-9 13z"/></svg>',
-      bow: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 15L6 9v12l9-6zM15 15l9-6v12l-9-6z"/><circle cx="15" cy="15" r="2"/></svg>',
-      shower: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6h12a6 6 0 0 1 6 6v2H14"/><path d="M10 18v6M15 19v6M20 18v6M7 20v4"/></svg>',
-      hanger: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 7a2 2 0 1 1 2 2c0 2-2 3-2 3L4 20h22L15 12"/></svg>',
-      pillow: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="9" width="20" height="13" rx="4"/></svg>',
-      watering: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 14h11l1 10H8L7 14z"/><path d="M18 16h6l-2 5h-3M12 10c0-3 6-3 6 0"/></svg>',
-      rake: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 3v16"/><path d="M8 26V19h14v7M8 22h14M11 19v7M19 19v7"/></svg>',
-      plug: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 4v7M20 4v7"/><path d="M8 11h14v6a7 7 0 0 1-14 0v-6z"/><path d="M15 24v4"/></svg>',
-      clock: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="15" cy="16" r="9"/><path d="M15 16V11M15 16l4 3"/></svg>',
-      key: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="14" r="5"/><path d="M14 14h12l-2 3h-3l-1 3h-3"/></svg>',
-      book: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6h8c2 0 3 1 3 3v15H9c-2 0-3-1-3-3V6z"/><path d="M17 9h7v15h-7"/></svg>',
-      speaker: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="4" width="12" height="22" rx="2"/><circle cx="15" cy="18" r="4"/><circle cx="15" cy="9" r="1.5"/></svg>',
-      umbrella: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 16c0-6 4.5-11 10-11s10 5 10 11H5z"/><path d="M15 16v8a2 2 0 0 0 4 0"/></svg>',
-      star: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 4l2.6 6.6H25l-5.4 4 2.1 6.6L15 17.5 8.3 21.2l2.1-6.6L5 10.6h7.4z"/></svg>',
-      home: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 14L15 5l11 9"/><path d="M8 13v12h14V13"/></svg>',
-      ladder: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 4v22M20 4v22M10 8h10M10 13h10M10 18h10M10 23h10"/></svg>',
-      paint: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 14h14l-1 10H9L8 14z"/><path d="M12 14V8h6l2 4"/></svg>',
-      scissors: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="10" r="3"/><circle cx="8" cy="20" r="3"/><path d="M10.5 12L24 24M10.5 18L24 6"/></svg>',
-      box: '<svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10l11-5 11 5v12l-11 5-11-5V10z"/><path d="M4 10l11 5 11-5M15 15v12"/></svg>'
-    };
+    const ICONS = window.HS_ICONS || {};
+    function iconImg(name) {
+      const n = String(name || "gift").toLowerCase().replace(/[^a-z0-9_-]/g, "");
+      return `<img class="gift-icon" src="images/icons/${n}.png" alt="" onerror="this.onerror=null;this.src='images/icons/gift.png'">`;
+    }
 
     const GIFTS = [
       { id: "sabanas", articulo: "Juego de sábanas", categoria: "Cama y baño", detalle: "Algodón suave, cama doble", icon: "bed",
@@ -740,6 +846,8 @@
     let categoria = "Todas";
     const mine = new Set(JSON.parse(sessionStorage.getItem("home-shower-mine") || "[]"));
     const useApi = () => !!(CONFIG.apiUrl && CONFIG.apiUrl.trim());
+    const LOAD_TIMEOUT_MS = 15000;
+    const RETRY_WAIT_MINUTES = 2;
 
     function hydrate(row) {
       const id = String(row.id || row.Id || "").trim();
@@ -776,29 +884,41 @@
     }
 
     async function apiGet(params) {
+      if (!useApi()) throw new Error("no-api");
       const url = new URL(CONFIG.apiUrl);
       Object.entries(params || {}).forEach(([k, v]) => url.searchParams.set(k, v));
-      const res = await fetch(url.toString(), { method: "GET" });
-      return res.json();
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), LOAD_TIMEOUT_MS);
+      try {
+        const res = await fetch(url.toString(), { method: "GET", signal: ctrl.signal });
+        if (!res.ok) throw new Error("http " + res.status);
+        return await res.json();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function showListError() {
+      regalos = [];
+      document.getElementById("statsBar").innerHTML = "";
+      document.getElementById("chips").innerHTML = "";
+      document.getElementById("grid").innerHTML = `
+        <div class="list-error" role="alert">
+          <p>No pudimos abrir la lista del hogar a tiempo.</p>
+          <p class="wait">Estamos presentando fallas al cargar la lista de detalles, por favor espera ${RETRY_WAIT_MINUTES} minutos y recarga la página para intentarlo de nuevo.</p>
+          <button class="ghost-btn" type="button" id="reloadNowBtn">Recargar ahora</button>
+        </div>`;
+      const btn = document.getElementById("reloadNowBtn");
+      if (btn) btn.addEventListener("click", () => location.reload());
     }
 
     async function load() {
-      if (!useApi()) {
-        loadLocal();
-        return;
-      }
-      try {
-        const data = await apiGet();
-        const list = Array.isArray(data.regalos) ? data.regalos : [];
-        regalos = list.length
-          ? list.map(hydrate).filter(g => g.id)
-          : GIFTS.map(g => ({ ...g, reservadoPor: "" }));
-      } catch (err) {
-        console.error(err);
-        document.getElementById("grid").innerHTML =
-          '<div class="loading">No pudimos conectar la lista. Revisa la URL de Apps Script.</div>';
-        throw err;
-      }
+      if (!useApi()) throw new Error("no-api");
+      const data = await apiGet();
+      const list = Array.isArray(data.regalos) ? data.regalos : [];
+      const next = list.map(hydrate).filter(g => g.id);
+      if (!next.length) throw new Error("empty");
+      regalos = next;
     }
 
     function escapeHtml(str) {
@@ -817,8 +937,7 @@
     }
 
     function renderChips() {
-      const source = regalos.length ? regalos : GIFTS;
-      const cats = ["Todas", ...new Set(source.map(g => g.categoria))];
+      const cats = ["Todas", ...new Set(regalos.map(g => g.categoria))];
       document.getElementById("chips").innerHTML = cats.map(c =>
         `<button class="chip ${c === categoria ? "active" : ""}" data-cat="${c}">${c}</button>`
       ).join("");
@@ -868,7 +987,7 @@
           <article class="flip ${taken ? "is-flipped" : ""}" data-card="${item.id}">
             <div class="face face-front">
               <span class="cat">${item.categoria}</span>
-              <div class="icon-well">${ICONS[item.icon] || ICONS.gift}</div>
+              <div class="icon-well">${iconImg(item.icon)}</div>
               <h3 class="card-title">${escapeHtml(item.articulo)}</h3>
               <p class="card-detail">${escapeHtml(item.detalle)}</p>
               <div class="spacer"></div>
@@ -879,9 +998,9 @@
               <div class="thanks-name">${name}</div>
               <p class="verse">“${escapeHtml(item.versiculo)}”</p>
               <div class="cite">${escapeHtml(item.cita)}</div>
-              <p class="thanks-msg">Gracias ${name} por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}</p>
+              <p class="thanks-msg">Gracias ${name} por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}.</p>
               <div class="spacer"></div>
-              <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · volver al frente</button>
+              <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · Seleccionar otro detalle</button>
             </div>
           </article>
         </div>`;
@@ -920,7 +1039,7 @@
         closeModal();
         await load();
         render();
-        toast("Ese detalle ya fue tomado. La lista se actualizó.");
+        toast("Ese detalle ya fue seleccionado. La lista se actualizó.");
         return;
       }
 
@@ -939,7 +1058,7 @@
             document.getElementById("overlay").classList.add("open");
             await load();
             render();
-            toast("Ese cupo ya fue reservado por alguien más. Se actualizó la lista.");
+            toast("Ese detalle ya fue reservado por alguien más. Se actualizó la lista.");
             return;
           }
         } else {
@@ -960,7 +1079,7 @@
             el.classList.add("is-flipped");
           }
         });
-        toast("La tarjeta se volteó con tu nombre y un versículo.");
+        toast("Detalle seleccionado exitosamente.");
       } catch (err) {
         console.error(err);
         toast("Hubo un problema guardando tu reserva. Intenta de nuevo.");
@@ -968,7 +1087,7 @@
         hideBusy();
         confirmBtn.disabled = false;
         cancelBtn.disabled = false;
-        confirmBtn.textContent = "Elegir y voltear";
+        confirmBtn.textContent = "Elegir detalle";
       }
     }
 
@@ -982,7 +1101,7 @@
         if (useApi()) {
           const result = await apiGet({ action: "release", id });
           if (!result.success) {
-            toast("No se pudo liberar. Actualiza e intenta de nuevo.");
+            toast("No se pudo devolver el detalle. Actualiza e intenta de nuevo.");
             await load();
             render();
             return;
@@ -995,10 +1114,10 @@
         sessionStorage.setItem("home-shower-mine", JSON.stringify([...mine]));
         await load();
         render();
-        toast("La tarjeta volvió a su cara original.");
+        toast("Tu detalle fue devuelto exitosamente.");
       } catch (err) {
         console.error(err);
-        toast("No se pudo conectar para liberar el regalo.");
+        toast("Lo sentimos no se pudo devolver el detalle, intenta de nuevo.");
       } finally {
         hideBusy();
       }
@@ -1027,6 +1146,10 @@
         await load();
         render();
         toast("Lista actualizada");
+      } catch (e) {
+        console.error(e);
+        if (!regalos.length) showListError();
+        else toast("No se pudo actualizar. Espera un momento y recarga.");
       } finally {
         hideBusy();
       }
@@ -1036,10 +1159,11 @@
       showBusy("Abriendo las puertas del hogar…");
       try {
         await load();
-      } catch (e) {
-        loadLocal();
-      } finally {
         render();
+      } catch (e) {
+        console.error(e);
+        showListError();
+      } finally {
         hideBusy();
       }
       if (useApi()) {
@@ -1047,7 +1171,7 @@
           try {
             await load();
             render();
-          } catch (e) { /* silencio */ }
+          } catch (e) { /* keep last good list */ }
         }, 20000);
       }
     })();
