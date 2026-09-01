@@ -827,7 +827,7 @@
       document.getElementById("grid").innerHTML = `
         <div class="list-error" role="alert">
           <p>No pudimos abrir la lista del hogar a tiempo.</p>
-          <p class="wait">Estamos presentando fallas al tratar de cargar la lista de detalles, por favor espera ${RETRY_WAIT_MINUTES} minutos y recarga la página para intentarlo de nuevo.</p>
+          <p class="wait">Espera ${RETRY_WAIT_MINUTES} minutos y recarga la página para intentarlo de nuevo. Así nos aseguramos de traer la lista real, no una de prueba.</p>
           <button class="ghost-btn" type="button" id="reloadNowBtn">Recargar ahora</button>
         </div>`;
       const btn = document.getElementById("reloadNowBtn");
@@ -922,7 +922,7 @@
               <div class="cite">${escapeHtml(item.cita)}</div>
               <p class="thanks-msg">Gracias ${name} por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}</p>
               <div class="spacer"></div>
-              <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · Seleccionar otro detalle</button>
+              <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · volver al frente</button>
             </div>
           </article>
         </div>`;
@@ -980,7 +980,7 @@
             document.getElementById("overlay").classList.add("open");
             await load();
             render();
-            toast("Ese detalle ya fue reservado por alguien más. Se actualizó la lista.");
+            toast("Ese cupo ya fue reservado por alguien más. Se actualizó la lista.");
             return;
           }
         } else {
@@ -1001,7 +1001,7 @@
             el.classList.add("is-flipped");
           }
         });
-        toast("Detalle seleccionado correctamente.");
+        toast("La tarjeta se volteó con tu nombre y un versículo.");
       } catch (err) {
         console.error(err);
         toast("Hubo un problema guardando tu reserva. Intenta de nuevo.");
@@ -1036,7 +1036,7 @@
         sessionStorage.setItem("home-shower-mine", JSON.stringify([...mine]));
         await load();
         render();
-        toast("Detalle liberado correctamente.");
+        toast("La tarjeta volvió a su cara original.");
       } catch (err) {
         console.error(err);
         toast("No se pudo conectar para liberar el regalo.");
