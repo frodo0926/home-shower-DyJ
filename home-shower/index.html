@@ -126,6 +126,64 @@
       font-size: 15.5px;
     }
 
+    .bono-card {
+      margin: -8px auto 36px;
+      max-width: 720px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      backdrop-filter: blur(8px);
+      border: 1px solid color-mix(in srgb, var(--khaki) 70%, white);
+      border-radius: 24px;
+      padding: 20px 24px 22px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15.5px;
+    }
+    .bono-card p { margin: 0; }
+    .bono-card .hl {
+      color: var(--rose);
+      font-weight: 600;
+      font-style: italic;
+    }
+    .pay-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin: 14px 0 8px;
+    }
+    .pay-item {
+      min-width: 140px;
+      max-width: 180px;
+    }
+    .pay-item img {
+      width: 72px;
+      height: 72px;
+      max-width: 72px;
+      max-height: 72px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 8px;
+      background: transparent;
+    }
+    .pay-item p {
+      margin: 0;
+      font-size: 14.5px;
+      color: var(--taupe);
+    }
+    .acct {
+      font-weight: 700;
+      color: var(--olive);
+      letter-spacing: 0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+    .bono-note {
+      margin: 12px 0 0 !important;
+      font-size: 14.5px;
+    }
+
     .stats {
       display: flex;
       justify-content: center;
@@ -573,9 +631,29 @@
 
     <main class="wrap">
       <div class="intro-card">
-        Cada regalo es una semilla en este nido. Si eliges uno, la tarjeta gira
-        y queda a tu nombre, con un versículo. Si cambias de parecer, puedes
-        devolverla y vuelve a su cara original — para que otro ser querido la tome.
+        Cada detalle es una semilla para nuestro hogar. Al seleccionar un regalo, la tarjeta girará y quedará a tu nombre. Si cambias de parecer, no te preocupes: puedes devolverlo para que otro ser querido lo elija y tú puedas escoger otro.
+      </div>
+
+      <div class="bono-card">
+        <p>
+          ¡Gracias por tu generosidad! Si elegiste la opción de
+          <strong class="hl">bono</strong>, puedes hacer tu transferencia a
+          cualquiera de estas cuentas:
+        </p>
+        <div class="pay-row">
+          <div class="pay-item">
+            <img src="images/logo-nequi.png" alt="Nequi" width="72" height="72" />
+            <p>Nequi: <span class="acct">3102050306</span></p>
+          </div>
+          <div class="pay-item">
+            <img src="images/logo-breb.png" alt="Llave Bre-B" width="72" height="72" />
+            <p>Llave Bre-B: <span class="acct">3115633346</span></p>
+          </div>
+        </div>
+        <p class="bono-note">
+          Por favor, no olvides compartirnos el comprobante y llevar un sobrecito
+          con una nota o la descripción de tu detalle. ¡Agradecemos enormemente tu cariño!
+        </p>
       </div>
 
       <div class="stats" id="statsBar"></div>
@@ -596,7 +674,7 @@
       <div class="grid" id="grid"></div>
 
       <footer>Hogar Daniel y Jimena · “Yo y mi casa serviremos a Jehová.” Josué 24:15<br />
-        <a href="catalogo-iconos.html" style="color:inherit;opacity:.75">Catálogo de iconos para Excel</a>
+        <a href="catalogo-iconos.html" style="color:inherit;opacity:.75">H & R Soluciones</a>
       </footer>
     </main>
   </div>
@@ -606,11 +684,11 @@
       <img src="images/sello-hogar.png" alt="" />
       <h3>¿Quién regala este detalle?</h3>
       <p class="item" id="modalItem"></p>
-      <p class="hint">Escribe tu nombre para voltear la tarjeta y dejar el versículo a tu nombre.</p>
+      <p class="hint">Escribe tu nombre para sleccionar este detalle.</p>
       <input id="modalName" type="text" maxlength="60" placeholder="Tu nombre completo" autocomplete="name" />
       <div class="modal-actions">
         <button class="btn-cancel" id="modalCancel" type="button">Cancelar</button>
-        <button class="btn-ok" id="modalOk" type="button">Elegir y voltear</button>
+        <button class="btn-ok" id="modalOk" type="button">Elegir detalle</button>
       </div>
     </div>
   </div>
@@ -827,7 +905,7 @@
       document.getElementById("grid").innerHTML = `
         <div class="list-error" role="alert">
           <p>No pudimos abrir la lista del hogar a tiempo.</p>
-          <p class="wait">Estamos presentando fallas al tratar de cargar la lista de detalles, por favor espera ${RETRY_WAIT_MINUTES} minutos y recarga la página para intentarlo de nuevo.</p>
+          <p class="wait">Estamos presentando fallas al cargar la lista de detalles, por favor espera ${RETRY_WAIT_MINUTES} minutos y recarga la página para intentarlo de nuevo.</p>
           <button class="ghost-btn" type="button" id="reloadNowBtn">Recargar ahora</button>
         </div>`;
       const btn = document.getElementById("reloadNowBtn");
@@ -920,7 +998,7 @@
               <div class="thanks-name">${name}</div>
               <p class="verse">“${escapeHtml(item.versiculo)}”</p>
               <div class="cite">${escapeHtml(item.cita)}</div>
-              <p class="thanks-msg">Gracias ${name} por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}</p>
+              <p class="thanks-msg">Gracias ${name} por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}.</p>
               <div class="spacer"></div>
               <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · Seleccionar otro detalle</button>
             </div>
@@ -961,7 +1039,7 @@
         closeModal();
         await load();
         render();
-        toast("Ese detalle ya fue tomado. La lista se actualizó.");
+        toast("Ese detalle ya fue seleccionado. La lista se actualizó.");
         return;
       }
 
@@ -1001,7 +1079,7 @@
             el.classList.add("is-flipped");
           }
         });
-        toast("Detalle seleccionado correctamente.");
+        toast("Detalle seleccionado exitosamente.");
       } catch (err) {
         console.error(err);
         toast("Hubo un problema guardando tu reserva. Intenta de nuevo.");
@@ -1009,7 +1087,7 @@
         hideBusy();
         confirmBtn.disabled = false;
         cancelBtn.disabled = false;
-        confirmBtn.textContent = "Elegir y voltear";
+        confirmBtn.textContent = "Elegir detalle";
       }
     }
 
@@ -1023,7 +1101,7 @@
         if (useApi()) {
           const result = await apiGet({ action: "release", id });
           if (!result.success) {
-            toast("No se pudo liberar. Actualiza e intenta de nuevo.");
+            toast("No se pudo devolver el detalle. Actualiza e intenta de nuevo.");
             await load();
             render();
             return;
@@ -1036,10 +1114,10 @@
         sessionStorage.setItem("home-shower-mine", JSON.stringify([...mine]));
         await load();
         render();
-        toast("Detalle liberado correctamente.");
+        toast("Tu detalle fue devuelto exitosamente.");
       } catch (err) {
         console.error(err);
-        toast("No se pudo conectar para liberar el regalo.");
+        toast("Lo sentimos no se pudo devolver el detalle, intenta de nuevo.");
       } finally {
         hideBusy();
       }
