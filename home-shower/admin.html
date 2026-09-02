@@ -143,7 +143,10 @@
       document.getElementById("logsView").classList.remove("hidden");
     }
 
+    let lastAuthError = "";
+
     async function login() {
+      lastAuthError = "";
       if (!CONFIG.apiUrl) {
         document.getElementById("loginErr").textContent = "Falta pegar la URL /exec en CONFIG.apiUrl de esta página.";
         showLogin(true);
@@ -155,7 +158,7 @@
       const ok = await loadLogs();
       if (!ok) {
         sessionStorage.removeItem("hs-admin");
-        document.getElementById("loginErr").textContent = "Usuario o clave no coinciden.";
+        document.getElementById("loginErr").textContent = lastAuthError || "Usuario o clave no coinciden.";
         showLogin(true);
         return;
       }
@@ -168,6 +171,7 @@
       const box = document.getElementById("tableBox");
       if (!CONFIG.apiUrl || !c) {
         box.innerHTML = '<p class="empty">Falta pegar la URL /exec en CONFIG.apiUrl de esta página.</p>';
+        lastAuthError = "Falta pegar la URL /exec en CONFIG.apiUrl de esta página.";
         return false;
       }
       box.innerHTML = '<p class="empty">Leyendo la bitácora…</p>';
@@ -178,7 +182,16 @@
         url.searchParams.set("ph", c.ph);
         const res = await fetch(url.toString());
         const data = await res.json();
+        if (Array.isArray(data.regalos) && data.eventos === undefined) {
+          lastAuthError = "El puente de Google aún no tiene la bitácora. En Apps Script pega el Code.gs nuevo y luego Implementar → Administrar implementaciones → lápiz → Nueva versión.";
+          sessionStorage.removeItem("hs-admin");
+          showLogin(true);
+          return false;
+        }
         if (!data.success) {
+          lastAuthError = data.error === "unauthorized"
+            ? "Usuario o clave no coinciden."
+            : ("No se pudo abrir la bitácora: " + (data.error || "error"));
           sessionStorage.removeItem("hs-admin");
           showLogin(true);
           return false;
@@ -192,7 +205,7 @@
           <thead><tr><th>Fecha</th><th>Acción</th><th>Detalle</th><th>Nombre</th><th>Id</th></tr></thead>
           <tbody>${rows.map(r => `<tr>
             <td>${esc(r.fecha)}</td>
-            <td><span class="pill ${r.accion === "devolver" ? "devolver" : "elegir"}">${r.accion === "devolver" ? "Devuelto" : "Elegido"}</span></td>
+            <td><span class="pill ${r.accion === "devolver" ? "devolver" : (r.accion === "intento" ? "devolver" : "elegir")}">${r.accion === "devolver" ? "Devuelto" : (r.accion === "intento" ? "Intento" : "Elegido")}</span></td>
             <td>${esc(r.articulo)}</td>
             <td>${esc(r.nombre)}</td>
             <td>${esc(r.id)}</td>
@@ -224,5 +237,6 @@
       loadLogs();
     }
   </script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a348ebc16ebeb2bc',t:'MTc4ODMxNDQyNA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f"}' crossorigin="anonymous"></script>
 </body>
 </html>
