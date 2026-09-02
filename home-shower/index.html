@@ -372,12 +372,15 @@
     }
     .choose-btn:hover { background: #2a211e; }
 
-    .seal {
-      width: 86px;
-      height: 86px;
-      object-fit: contain;
-      margin-bottom: 4px;
-      background: transparent;
+    .face-back .icon-well {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 6px;
+    }
+    .face-back .icon-well img,
+    .face-back .gift-icon {
+      width: 110px;
+      height: 110px;
     }
     .thanks-name {
       font-family: Fraunces, Georgia, serif;
@@ -682,9 +685,9 @@
   <div class="overlay" id="overlay">
     <div class="modal" role="dialog" aria-modal="true">
       <img src="images/sello-hogar.png" alt="" />
-      <h3>¿Quién regala este detalle?</h3>
+      <h3 id="modalTitle">¿Quién regala este detalle?</h3>
       <p class="item" id="modalItem"></p>
-      <p class="hint">Escribe tu nombre para sleccionar este detalle.</p>
+      <p class="hint" id="modalHint">Escribe tu nombre para seleccionar este detalle.</p>
       <input id="modalName" type="text" maxlength="60" placeholder="Tu nombre completo" autocomplete="name" />
       <div class="modal-actions">
         <button class="btn-cancel" id="modalCancel" type="button">Cancelar</button>
@@ -797,7 +800,7 @@
     const ICONS = window.HS_ICONS || {};
     function iconImg(name) {
       const n = String(name || "gift").toLowerCase().replace(/[^a-z0-9_-]/g, "");
-      return `<img class="gift-icon" src="images/icons/${n}.png" alt="" onerror="this.onerror=null;this.src='images/icons/gift.png'">`;
+      return `<img class="gift-icon" src="images/icons/${n}.png" alt="" width="148" height="148" onerror="this.onerror=null;this.src='images/icons/gift.png'">`;
     }
 
     const GIFTS = [
@@ -843,6 +846,7 @@
 
     let regalos = [];
     let pendingId = null;
+    let pendingMode = "reserve";
     let categoria = "Todas";
     const mine = new Set(JSON.parse(sessionStorage.getItem("home-shower-mine") || "[]"));
     const useApi = () => !!(CONFIG.apiUrl && CONFIG.apiUrl.trim());
@@ -976,12 +980,11 @@
         btn.addEventListener("click", () => openModal(btn.dataset.choose));
       });
       box.querySelectorAll("[data-release]").forEach(btn => {
-        btn.addEventListener("click", () => release(btn.dataset.release));
+        btn.addEventListener("click", () => openRelease(btn.dataset.release));
       });
     }
 
     function cardHtml(item, taken) {
-      const name = escapeHtml(item.reservadoPor || "");
       return `
         <div class="scene">
           <article class="flip ${taken ? "is-flipped" : ""}" data-card="${item.id}">
@@ -994,11 +997,11 @@
               <button class="choose-btn" data-choose="${item.id}" type="button">Elegir este detalle</button>
             </div>
             <div class="face face-back">
-              <img class="seal" src="images/sello-hogar.png" alt="" />
-              <div class="thanks-name">${name}</div>
+              <div class="icon-well">${iconImg(item.icon)}</div>
+              <div class="thanks-name">Reservado</div>
               <p class="verse">“${escapeHtml(item.versiculo)}”</p>
               <div class="cite">${escapeHtml(item.cita)}</div>
-              <p class="thanks-msg">Gracias ${name} por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}.</p>
+              <p class="thanks-msg">Gracias por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}.</p>
               <div class="spacer"></div>
               <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · Seleccionar otro detalle</button>
             </div>
@@ -1006,18 +1009,37 @@
         </div>`;
     }
 
-    function openModal(id) {
-      const item = regalos.find(g => g.id === id);
-      if (!item || item.reservadoPor) return;
-      pendingId = id;
+    function setModal(mode, item) {
+      pendingMode = mode;
+      pendingId = item.id;
+      const choose = mode === "reserve";
+      document.getElementById("modalTitle").textContent = choose
+        ? "¿Quién regala este detalle?"
+        : "¿Quién devuelve este detalle?";
+      document.getElementById("modalHint").textContent = choose
+        ? "Escribe tu nombre para seleccionar este detalle."
+        : "Escribe el mismo nombre con el que lo reservaste. Así nadie devuelve el detalle de otro.";
+      document.getElementById("modalOk").textContent = choose ? "Elegir detalle" : "Devolver el detalle";
       document.getElementById("modalItem").textContent = item.articulo;
       document.getElementById("modalName").value = "";
       document.getElementById("overlay").classList.add("open");
       document.getElementById("modalName").focus();
     }
+
+    function openModal(id) {
+      const item = regalos.find(g => g.id === id);
+      if (!item || item.reservadoPor) return;
+      setModal("reserve", item);
+    }
+    function openRelease(id) {
+      const item = regalos.find(g => g.id === id);
+      if (!item || !item.reservadoPor) return;
+      setModal("release", item);
+    }
     function closeModal() {
       document.getElementById("overlay").classList.remove("open");
       pendingId = null;
+      pendingMode = "reserve";
     }
 
     function showBusy(msg) {
@@ -1091,28 +1113,63 @@
       }
     }
 
-    async function release(id) {
-      const item = regalos.find(g => g.id === id);
-      if (!item || !item.reservadoPor) return;
-      const ok = confirm(`¿Dejar disponible de nuevo “${item.articulo}”, elegido por ${item.reservadoPor}?`);
-      if (!ok) return;
+    function normName(s) {
+      return String(s || "").toLowerCase().replace(/\s+/g, " ").trim();
+    }
+
+    function confirmModal() {
+      if (pendingMode === "release") confirmRelease();
+      else confirmChoose();
+    }
+
+    async function confirmRelease() {
+      const name = document.getElementById("modalName").value.trim();
+      if (!name || !pendingId) {
+        document.getElementById("modalName").focus();
+        return;
+      }
+      const item = regalos.find(g => g.id === pendingId);
+      if (!item || !item.reservadoPor) {
+        closeModal();
+        try { await load(); } catch (e) {}
+        render();
+        return;
+      }
+
+      const confirmBtn = document.getElementById("modalOk");
+      const cancelBtn = document.getElementById("modalCancel");
+      confirmBtn.disabled = true;
+      cancelBtn.disabled = true;
       showBusy("Devolviendo el detalle a la casa…");
+
       try {
         if (useApi()) {
-          const result = await apiGet({ action: "release", id });
+          const result = await apiGet({ action: "release", id: item.id, nombre: name });
           if (!result.success) {
+            hideBusy();
+            if (result.error === "forbidden") {
+              toast("Ese nombre no coincide con quien reservó este detalle.");
+              document.getElementById("modalName").focus();
+              return;
+            }
             toast("No se pudo devolver el detalle. Actualiza e intenta de nuevo.");
-            await load();
-            render();
+            closeModal();
+            try { await load(); render(); } catch (e) {}
             return;
           }
+        } else if (normName(item.reservadoPor) !== normName(name)) {
+          hideBusy();
+          toast("Ese nombre no coincide con quien reservó este detalle.");
+          document.getElementById("modalName").focus();
+          return;
         } else {
           item.reservadoPor = "";
           persistLocal();
         }
-        mine.delete(id);
+        mine.delete(item.id);
         sessionStorage.setItem("home-shower-mine", JSON.stringify([...mine]));
-        await load();
+        closeModal();
+        try { await load(); } catch (e) {}
         render();
         toast("Tu detalle fue devuelto exitosamente.");
       } catch (err) {
@@ -1120,6 +1177,8 @@
         toast("Lo sentimos no se pudo devolver el detalle, intenta de nuevo.");
       } finally {
         hideBusy();
+        confirmBtn.disabled = false;
+        cancelBtn.disabled = false;
       }
     }
 
@@ -1131,12 +1190,12 @@
     }
 
     document.getElementById("modalCancel").addEventListener("click", closeModal);
-    document.getElementById("modalOk").addEventListener("click", confirmChoose);
+    document.getElementById("modalOk").addEventListener("click", confirmModal);
     document.getElementById("overlay").addEventListener("click", e => {
       if (e.target.id === "overlay") closeModal();
     });
     document.getElementById("modalName").addEventListener("keydown", e => {
-      if (e.key === "Enter") confirmChoose();
+      if (e.key === "Enter") confirmModal();
     });
     document.getElementById("searchInput").addEventListener("input", render);
     document.getElementById("filterSelect").addEventListener("change", render);
@@ -1176,5 +1235,6 @@
       }
     })();
   </script>
-</body>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f"}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3490f3e4d83b3e0',t:'MTc4ODMxNTg3OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
