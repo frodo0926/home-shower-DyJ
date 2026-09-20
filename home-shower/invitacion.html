@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jimena &amp; Daniel | Nuestra Boda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #F2EDE6;
+      --arena: #D8CFC2;
+      --rose: #B89A8E;
+      --terra: #8A6B5D;
+      --espresso: #4B3F38;
+      --surface: #FFFCFA;
+      --white: #FFFFFF;
+      --shadow: 0 22px 48px rgba(75, 63, 56, 0.16);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--espresso);
+      font-family: Outfit, "Segoe UI", sans-serif;
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .music-widget {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 8px 8px;
+      border: 1px solid color-mix(in srgb, var(--arena) 70%, white);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      color: var(--espresso);
+      font-family: Outfit, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .music-widget:hover { background: var(--surface); }
+    .music-widget svg { width: 22px; height: 22px; display: block; }
+    .music-widget .disc {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--espresso);
+      color: var(--paper);
+      display: grid;
+      place-items: center;
+    }
+    .music-widget.is-playing .disc { animation: spin 8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: var(--espresso);
+      color: var(--paper);
+      opacity: 1;
+      transition: opacity 0.9s ease;
+    }
+    .intro.is-fading { opacity: 0; pointer-events: none; }
+    .intro.is-gone { display: none; }
+    .intro-card { text-align: center; max-width: 420px; }
+    .intro-date {
+      font-size: 13px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--rose);
+      font-weight: 500;
+    }
+    .intro-card h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(64px, 16vw, 96px);
+      margin: 18px 0 8px;
+      line-height: 0.85;
+    }
+    .intro-card h2 em { font-style: italic; font-weight: 400; color: var(--arena); }
+    .intro-card h3 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(26px, 5vw, 34px);
+      margin: 22px 0 10px;
+    }
+    .intro-card p { margin: 0; color: var(--arena); font-weight: 300; line-height: 1.6; }
+
+    .kicker {
+      font-size: 11px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .serif {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 88px 22px 36px;
+      background: var(--paper);
+    }
+    .hero .kicker { color: var(--terra); }
+    .hero h1 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(34px, 6.4vw, 58px);
+      line-height: 1.08;
+      margin: 14px auto 10px;
+      max-width: 16ch;
+    }
+    .mono {
+      font-family: Fraunces, Georgia, serif;
+      font-style: italic;
+      color: var(--rose);
+      font-size: 22px;
+      margin: 8px 0 0;
+    }
+
+    .photo-frame { overflow: hidden; background: #1a1614; }
+    .photo-frame img {
+      display: block;
+      filter: none;
+      transition: transform 0.7s ease;
+    }
+    .photo-crop img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .photo-crop:hover img { transform: scale(1.05); }
+
+    .shot-1-wrap {
+      background: var(--paper);
+      padding: 0 0 48px;
+    }
+    .shot-1 {
+      width: min(380px, 78vw);
+      height: min(72vh, 680px);
+      margin: 0 auto;
+      border-radius: 180px 180px 18px 18px;
+      box-shadow: var(--shadow);
+      transform: rotate(-2deg);
+    }
+    .shot-1 img { object-position: 50% 18%; }
+    .shot-1:hover { transform: rotate(0deg); }
+
+    .save {
+      background: var(--espresso);
+      color: var(--paper);
+      padding: 72px 22px 64px;
+    }
+    .save-inner { max-width: 980px; margin: 0 auto; }
+    .save .kicker { color: var(--rose); }
+    .save h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      margin: 10px 0 36px;
+    }
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-bottom: 36px;
+    }
+    .facts article {
+      border-top: 1px solid color-mix(in srgb, var(--arena) 40%, transparent);
+      padding-top: 16px;
+    }
+    .facts span {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 8px;
+    }
+    .facts strong {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 1.3;
+    }
+    .map-card {
+      background: var(--paper);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .map-card iframe {
+      width: 100%;
+      height: 340px;
+      border: 0;
+      display: block;
+    }
+    .map-card a {
+      display: block;
+      padding: 14px 16px 16px;
+      color: var(--terra);
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .map-card a:hover { color: var(--espresso); }
+
+    .together {
+      background: var(--arena);
+      padding: 56px 22px 64px;
+    }
+    .together-grid {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .shot-2 {
+      width: 100%;
+      height: min(78vh, 720px);
+      border-radius: 24px 120px 24px 24px;
+      box-shadow: var(--shadow);
+      transform: rotate(1.6deg);
+    }
+    .shot-2 img { object-position: 50% 28%; }
+    .shot-2:hover { transform: rotate(0) translateY(-8px); }
+    .together-copy .kicker { color: var(--terra); }
+    .together-copy h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      margin: 10px 0 0;
+      line-height: 1.15;
+    }
+
+    .dress {
+      background: var(--paper);
+      padding: 72px 22px 56px;
+    }
+    .dress-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+    .dress .kicker { color: var(--terra); }
+    .dress h2 {
+      font-size: clamp(30px, 5vw, 46px);
+      margin: 10px 0 18px;
+      line-height: 1.1;
+    }
+    .dress h2 em { font-style: italic; font-weight: 400; color: var(--rose); }
+    .badge {
+      display: inline-block;
+      background: var(--espresso);
+      color: var(--paper);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+    }
+    .dress p { color: var(--terra); line-height: 1.75; font-size: 16px; margin: 0 0 14px; }
+    .note {
+      background: var(--arena);
+      border-radius: 18px;
+      padding: 20px 22px;
+      margin: 22px 0 28px;
+      text-align: left;
+    }
+    .note strong {
+      display: block;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-bottom: 8px;
+      color: var(--espresso);
+    }
+    .swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+    }
+    .swatch { width: 92px; text-align: center; }
+    .swatch i {
+      display: block;
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--arena) 80%, var(--espresso));
+      box-shadow: inset 0 0 0 5px var(--paper);
+    }
+    .swatch b { display: block; font-size: 12px; font-weight: 600; }
+    .swatch span { display: block; font-size: 11px; color: var(--terra); }
+
+    .ring {
+      background: var(--espresso);
+      padding: 0;
+    }
+    .shot-3 {
+      width: min(720px, 100%);
+      margin: 0 auto;
+      background: #111;
+    }
+    .shot-3 img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+    }
+    .shot-3:hover img { transform: scale(1.015); }
+
+    .invite {
+      text-align: center;
+      padding: 80px 22px 72px;
+      background: var(--rose);
+      color: var(--espresso);
+    }
+    .invite .kicker { color: var(--espresso); opacity: 0.7; }
+    .invite h2 {
+      font-size: clamp(30px, 5vw, 46px);
+      margin: 10px auto 14px;
+      max-width: 14ch;
+      line-height: 1.1;
+    }
+    .invite p { margin: 0 auto; max-width: 42ch; line-height: 1.7; }
+    .rsvp-btn {
+      margin-top: 28px;
+      border: none;
+      background: var(--espresso);
+      color: var(--paper);
+      font-family: Outfit, sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .rsvp-btn:hover { background: #2f2723; }
+
+    footer {
+      text-align: center;
+      padding: 32px 22px 48px;
+      background: var(--espresso);
+      color: var(--arena);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    footer strong {
+      display: block;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--paper);
+      margin-bottom: 6px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(75, 63, 56, 0.5);
+      display: none;
+      place-items: center;
+      padding: 20px;
+      z-index: 70;
+    }
+    .overlay.open { display: grid; }
+    .modal {
+      width: min(440px, 100%);
+      background: var(--surface);
+      border-radius: 22px;
+      padding: 26px 22px;
+      border: 1px solid var(--arena);
+      box-shadow: var(--shadow);
+    }
+    .modal h3 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+    .modal .hint { color: var(--terra); font-size: 14px; margin: 0 0 16px; }
+    label { display: block; font-size: 13px; color: var(--terra); margin: 12px 0 6px; }
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1.5px solid var(--arena);
+      border-radius: 12px;
+      font-family: Outfit, sans-serif;
+      font-size: 15px;
+      background: #fff;
+      color: var(--espresso);
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .choice { display: flex; gap: 10px; }
+    .choice label {
+      flex: 1;
+      margin: 0;
+      border: 1.5px solid var(--arena);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--espresso);
+      font-size: 14px;
+    }
+    .choice input { display: none; }
+    .choice label:has(input:checked) {
+      border-color: var(--espresso);
+      background: var(--paper);
+      font-weight: 600;
+    }
+    .modal-actions { display: flex; gap: 8px; margin-top: 18px; }
+    .btn-cancel, .btn-ok {
+      flex: 1;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-family: Outfit, sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-cancel { background: transparent; border: 1.5px solid var(--arena); color: var(--espresso); }
+    .btn-ok { background: var(--espresso); color: var(--paper); }
+    .btn-ok:disabled, .btn-cancel:disabled { opacity: 0.6; cursor: wait; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--espresso);
+      color: var(--paper);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 90;
+      transition: 0.3s ease;
+      max-width: min(92vw, 420px);
+      text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .busy {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(242, 237, 230, 0.55);
+      z-index: 85;
+    }
+    .busy.open { display: grid; }
+    .busy p {
+      background: var(--surface);
+      border: 1px solid var(--arena);
+      padding: 16px 22px;
+      border-radius: 16px;
+      font-family: Fraunces, Georgia, serif;
+    }
+
+    @media (max-width: 820px) {
+      .facts { grid-template-columns: 1fr; }
+      .together-grid { grid-template-columns: 1fr; }
+      .shot-1, .shot-2 { transform: none; }
+      .shot-1 { height: 58vh; border-radius: 140px 140px 16px 16px; }
+      .shot-2 { height: 64vh; border-radius: 20px 72px 20px 20px; }
+      .map-card iframe { height: 240px; }
+      .music-widget span { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <button class="music-widget" id="musicBtn" type="button" aria-pressed="false" title="L-O-V-E · Frank Sinatra">
+    <span class="disc" aria-hidden="true">
+      <svg id="musicIcon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5.14v14l11-7-11-7z" />
+      </svg>
+    </span>
+    <span>L-O-V-E</span>
+  </button>
+  <audio id="loveTrack" src="audio/l-o-v-e.mp3" preload="metadata" loop playsinline></audio>
+
+  <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Resumen de la boda">
+    <div class="intro-card">
+      <div class="intro-date">29 · 11 · 2026</div>
+      <h2>J <em>&amp;</em> D</h2>
+      <h3 class="serif">Nuestra historia continúa</h3>
+      <p>Nos encantaría que nos acompañaras a celebrar este día.<br />3:00 p.m. · Hacienda Bella Luna Campestre</p>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="kicker">Con inmensa alegría</div>
+    <h1>Queremos compartir este momento contigo</h1>
+    <p class="mono">J&amp;D</p>
+  </header>
+
+  <div class="shot-1-wrap">
+    <figure class="photo-frame photo-crop shot-1">
+      <img src="images/boda/1.jpeg" alt="Abrazo, manos sobre la cabeza" width="738" height="1600" />
+    </figure>
+  </div>
+
+  <section class="save">
+    <div class="save-inner">
+      <div class="kicker">La celebración</div>
+      <h2 class="serif">Reserva la fecha</h2>
+      <div class="facts">
+        <article>
+          <span>Fecha</span>
+          <strong>Domingo, 29 de noviembre de 2026</strong>
+        </article>
+        <article>
+          <span>Hora</span>
+          <strong>3:00 p.m.</strong>
+        </article>
+        <article>
+          <span>Lugar</span>
+          <strong>Hacienda Bella Luna Campestre<br />Tibasosa, Boyacá</strong>
+        </article>
+      </div>
+      <div class="map-card">
+        <iframe
+          title="Hacienda Bella Luna Campestre en Google Maps"
+          src="https://maps.google.com/maps?q=Hacienda+Bella+Luna+Campestre,+Tibasosa,+Boyac%C3%A1&amp;ll=5.7323792,-72.9565723&amp;z=16&amp;hl=es&amp;output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+        <a href="https://maps.app.goo.gl/Gb9X3yFGfhab7Cjs8" target="_blank" rel="noopener">Ver ubicación en Google Maps</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="together">
+    <div class="together-grid">
+      <figure class="photo-frame photo-crop shot-2">
+        <img src="images/boda/2.jpeg" alt="Daniel besa la frente de Jimena mientras ella sonríe" width="1072" height="1467" />
+      </figure>
+      <div class="together-copy">
+        <div class="kicker">Juntos</div>
+        <h2 class="serif">Juntos es nuestro lugar favorito</h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="dress">
+    <div class="dress-inner">
+      <div class="kicker">Una nota especial</div>
+      <h2 class="serif">Código de Vestuario <em>Dress Code</em></h2>
+      <div class="badge">Formal</div>
+      <p>Queremos que nuestro día sea inolvidable. Les pedimos amablemente a nuestros invitados asistir con vestimenta formal.</p>
+      <div class="note">
+        <strong>Por favor tener en cuenta</strong>
+        Los tonos Blanco, Beige, Marfil y la paleta de colores de la pareja están estrictamente reservados exclusivamente para los novios. <strong>No utilizar estos colores.</strong>
+      </div>
+      <p class="kicker" style="margin-bottom:18px">Colores reservados para los novios</p>
+      <div class="swatches" aria-label="Colores reservados">
+        <div class="swatch"><i style="background:#FFFFFF"></i><b>Blanco</b><span>#FFFFFF</span></div>
+        <div class="swatch"><i style="background:#F2EDE6"></i><b>Marfil</b><span>#F2EDE6</span></div>
+        <div class="swatch"><i style="background:#D8CFC2"></i><b>Arena</b><span>#D8CFC2</span></div>
+        <div class="swatch"><i style="background:#B89A8E"></i><b>Rosa tierra</b><span>#B89A8E</span></div>
+        <div class="swatch"><i style="background:#8A6B5D"></i><b>Terracota</b><span>#8A6B5D</span></div>
+        <div class="swatch"><i style="background:#4B3F38"></i><b>Espresso</b><span>#4B3F38</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ring">
+    <figure class="photo-frame shot-3">
+      <img src="images/boda/3.jpeg" alt="Jimena muestra el anillo en primer plano" width="900" height="1600" />
+    </figure>
+  </section>
+
+  <section class="invite">
+    <div class="kicker">Celebra con nosotros</div>
+    <h2 class="serif">Tu presencia hará nuestro día completo</h2>
+    <p>Por favor confirma tu asistencia para acompañarnos en este momento tan especial.</p>
+    <button class="rsvp-btn" id="openRsvp" type="button">Confirmar asistencia</button>
+  </section>
+
+  <footer>
+    <strong>Jimena &amp; Daniel</strong>
+    Domingo, 29 de noviembre de 2026 · 3:00 p.m.<br />
+    Hacienda Bella Luna Campestre, Tibasosa, Boyacá
+  </footer>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rsvpTitle">
+      <h3 id="rsvpTitle">Confirmar asistencia</h3>
+      <p class="hint">Cuéntanos si nos acompañas. El cupo por confirmación es de hasta 4 invitados.</p>
+      <label for="rsvpName">Nombre completo</label>
+      <input id="rsvpName" type="text" maxlength="80" autocomplete="name" placeholder="Tu nombre y apellido" />
+      <label>¿Nos acompañarás?</label>
+      <div class="choice">
+        <label><input type="radio" name="asiste" value="si" checked /> Sí, asistiré</label>
+        <label><input type="radio" name="asiste" value="no" /> No podré ir</label>
+      </div>
+      <div id="guestsWrap">
+        <label for="rsvpGuests">Número de invitados</label>
+        <select id="rsvpGuests">
+          <option value="1">1 — solo yo</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+      <label for="rsvpMsg">Mensaje para los novios (opcional)</label>
+      <textarea id="rsvpMsg" maxlength="500" placeholder="Una nota, un deseo, un recuerdo…"></textarea>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="rsvpCancel" type="button">Cancelar</button>
+        <button class="btn-ok" id="rsvpOk" type="button">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="busy" id="busy"><p id="busyMsg">Guardando tu confirmación…</p></div>
+
+  <script>
+    const CONFIG = {
+      hosts: "Jimena & Daniel",
+      introFadeMs: 5000,
+      apiUrl: "https://script.google.com/macros/s/AKfycbyT4YjFX5Eix0I2C0Z4jGSjeWzFE4y6AYcUCh2rpbxcynCLhyhfJvVS3nzr2xs-0AA1Tg/exec",
+      audioSrc: "audio/l-o-v-e.mp3"
+    };
+
+    const intro = document.getElementById("intro");
+    const audio = document.getElementById("loveTrack");
+    const musicBtn = document.getElementById("musicBtn");
+    const musicIcon = document.getElementById("musicIcon");
+    const PLAY = '<path d="M8 5.14v14l11-7-11-7z"/>';
+    const PAUSE = '<path d="M7 5h3v14H7zm7 0h3v14h-3z"/>';
+
+    function hideIntro() {
+      intro.classList.add("is-fading");
+      setTimeout(() => intro.classList.add("is-gone"), 950);
+      tryPlay();
+    }
+    setTimeout(hideIntro, CONFIG.introFadeMs);
+    intro.addEventListener("click", hideIntro);
+
+    function setPlayingUi(on) {
+      musicBtn.classList.toggle("is-playing", on);
+      musicBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      musicIcon.innerHTML = on ? PAUSE : PLAY;
+    }
+    function tryPlay() {
+      audio.play().then(() => setPlayingUi(true)).catch(() => setPlayingUi(false));
+    }
+    musicBtn.addEventListener("click", () => {
+      if (audio.paused) tryPlay();
+      else { audio.pause(); setPlayingUi(false); }
+    });
+    audio.addEventListener("ended", () => setPlayingUi(false));
+
+    const overlay = document.getElementById("overlay");
+    const guestsWrap = document.getElementById("guestsWrap");
+    function asisteValue() {
+      const el = document.querySelector('input[name="asiste"]:checked');
+      return el ? el.value : "si";
+    }
+    function syncGuests() {
+      guestsWrap.style.display = asisteValue() === "si" ? "" : "none";
+    }
+    document.querySelectorAll('input[name="asiste"]').forEach(r => r.addEventListener("change", syncGuests));
+
+    document.getElementById("openRsvp").addEventListener("click", () => {
+      overlay.classList.add("open");
+      document.getElementById("rsvpName").focus();
+    });
+    function closeRsvp() { overlay.classList.remove("open"); }
+    document.getElementById("rsvpCancel").addEventListener("click", closeRsvp);
+    overlay.addEventListener("click", e => { if (e.target === overlay) closeRsvp(); });
+
+    function toast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2800);
+    }
+    function busy(on, msg) {
+      document.getElementById("busy").classList.toggle("open", on);
+      if (msg) document.getElementById("busyMsg").textContent = msg;
+    }
+
+    async function sendRsvp() {
+      const nombre = document.getElementById("rsvpName").value.trim();
+      if (!nombre) {
+        document.getElementById("rsvpName").focus();
+        return;
+      }
+      const asiste = asisteValue();
+      const invitados = asiste === "si" ? document.getElementById("rsvpGuests").value : "0";
+      const mensaje = document.getElementById("rsvpMsg").value.trim();
+      if (!CONFIG.apiUrl) {
+        toast("Falta la URL de Google en CONFIG.apiUrl.");
+        return;
+      }
+      const ok = document.getElementById("rsvpOk");
+      const cancel = document.getElementById("rsvpCancel");
+      ok.disabled = true;
+      cancel.disabled = true;
+      busy(true, "Guardando tu confirmación…");
+      try {
+        const url = new URL(CONFIG.apiUrl);
+        url.searchParams.set("action", "rsvp");
+        url.searchParams.set("nombre", nombre);
+        url.searchParams.set("asiste", asiste);
+        url.searchParams.set("invitados", invitados);
+        url.searchParams.set("mensaje", mensaje);
+        const res = await fetch(url.toString());
+        const data = await res.json();
+        if (!data.success) {
+          toast("No se pudo guardar. Intenta de nuevo en un momento.");
+          return;
+        }
+        closeRsvp();
+        document.getElementById("rsvpName").value = "";
+        document.getElementById("rsvpMsg").value = "";
+        toast(asiste === "si" ? "Gracias. Tu asistencia quedó confirmada." : "Gracias por avisarnos. Te extrañaremos.");
+      } catch (err) {
+        console.error(err);
+        toast("No se pudo conectar. Espera un momento e intenta otra vez.");
+      } finally {
+        busy(false);
+        ok.disabled = false;
+        cancel.disabled = false;
+      }
+    }
+    document.getElementById("rsvpOk").addEventListener("click", sendRsvp);
+    document.getElementById("rsvpName").addEventListener("keydown", e => {
+      if (e.key === "Enter") sendRsvp();
+    });
+  </script>
+</body>
+</html>
