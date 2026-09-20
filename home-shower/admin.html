@@ -64,10 +64,15 @@
       background: transparent;
       color: var(--ink);
       border: 1.5px solid var(--blush);
-      margin-left: 8px;
+    }
+    button.on {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
     }
     .err { color: #9a3b32; font-size: 14px; margin-top: 10px; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .toolbar button { margin-top: 0; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -77,7 +82,7 @@
       border: 1px solid var(--blush);
       font-size: 14px;
     }
-    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--blush); }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--blush); vertical-align: top; }
     th { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--taupe); }
     .pill {
       display: inline-block;
@@ -86,16 +91,17 @@
       font-size: 12px;
       font-weight: 600;
     }
-    .pill.elegir { background: #e8d8ce; color: var(--ink); }
-    .pill.devolver { background: #f3ece8; color: var(--taupe); }
+    .pill.elegir, .pill.confirmar { background: #e8d8ce; color: var(--ink); }
+    .pill.devolver, .pill.declinar, .pill.intento { background: #f3ece8; color: var(--taupe); }
     .empty { color: var(--taupe); font-family: Fraunces, Georgia, serif; padding: 28px; text-align: center; }
     .hidden { display: none; }
+    .msg { max-width: 280px; color: var(--taupe); font-size: 13px; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Bitácora del hogar</h1>
-    <p class="lead">Solo anfitriones. Registro de quién eligió o devolvió un detalle.</p>
+    <p class="lead">Solo anfitriones. Regalos del home shower e invitaciones de la boda.</p>
 
     <div id="loginView" class="card">
       <label for="user">Usuario</label>
@@ -108,6 +114,8 @@
 
     <div id="logsView" class="hidden">
       <div class="toolbar">
+        <button type="button" id="viewHogarBtn" class="ghost on">Bitácora del hogar</button>
+        <button type="button" id="viewRsvpBtn" class="ghost">Bitácora invitaciones</button>
         <button type="button" id="refreshBtn">↻ Actualizar</button>
         <button type="button" class="ghost" id="logoutBtn">Cerrar sesión</button>
       </div>
@@ -117,9 +125,10 @@
 
   <script>
     const CONFIG = {
-      /* Misma URL /exec que en index.html */
       apiUrl: "https://script.google.com/macros/s/AKfycbyT4YjFX5Eix0I2C0Z4jGSjeWzFE4y6AYcUCh2rpbxcynCLhyhfJvVS3nzr2xs-0AA1Tg/exec"
     };
+
+    let view = "hogar";
 
     async function sha256hex(str) {
       const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
@@ -141,6 +150,13 @@
     function showLogs() {
       document.getElementById("loginView").classList.add("hidden");
       document.getElementById("logsView").classList.remove("hidden");
+    }
+
+    function setView(next) {
+      view = next;
+      document.getElementById("viewHogarBtn").classList.toggle("on", view === "hogar");
+      document.getElementById("viewRsvpBtn").classList.toggle("on", view === "invitaciones");
+      loadLogs();
     }
 
     let lastAuthError = "";
@@ -166,6 +182,55 @@
       showLogs();
     }
 
+    function pillHogar(accion) {
+      if (accion === "devolver") return ["devolver", "Devuelto"];
+      if (accion === "intento") return ["intento", "Intento"];
+      return ["elegir", "Elegido"];
+    }
+    function pillRsvp(accion) {
+      if (accion === "declinar") return ["declinar", "No asiste"];
+      return ["confirmar", "Confirmó"];
+    }
+
+    function tableHogar(rows) {
+      if (!rows.length) {
+        return '<p class="empty">Aún no hay movimientos. Cuando alguien elija o devuelva un detalle, aparecerá aquí.</p>';
+      }
+      return `<table>
+        <thead><tr><th>Fecha</th><th>Acción</th><th>Detalle</th><th>Nombre</th><th>Id</th></tr></thead>
+        <tbody>${rows.map(r => {
+          const [cls, label] = pillHogar(r.accion);
+          return `<tr>
+            <td>${esc(r.fecha)}</td>
+            <td><span class="pill ${cls}">${label}</span></td>
+            <td>${esc(r.articulo)}</td>
+            <td>${esc(r.nombre)}</td>
+            <td>${esc(r.id)}</td>
+          </tr>`;
+        }).join("")}</tbody>
+      </table>`;
+    }
+
+    function tableRsvp(rows) {
+      if (!rows.length) {
+        return '<p class="empty">Aún no hay confirmaciones de la boda. Cuando alguien envíe el formulario, aparecerá aquí.</p>';
+      }
+      return `<table>
+        <thead><tr><th>Fecha</th><th>Acción</th><th>Nombre</th><th>Asiste</th><th>Invitados</th><th>Mensaje</th></tr></thead>
+        <tbody>${rows.map(r => {
+          const [cls, label] = pillRsvp(r.accion);
+          return `<tr>
+            <td>${esc(r.fecha)}</td>
+            <td><span class="pill ${cls}">${label}</span></td>
+            <td>${esc(r.nombre)}</td>
+            <td>${esc(r.asiste)}</td>
+            <td>${esc(r.invitados)}</td>
+            <td class="msg">${esc(r.mensaje)}</td>
+          </tr>`;
+        }).join("")}</tbody>
+      </table>`;
+    }
+
     async function loadLogs() {
       const c = creds();
       const box = document.getElementById("tableBox");
@@ -177,7 +242,7 @@
       box.innerHTML = '<p class="empty">Leyendo la bitácora…</p>';
       try {
         const url = new URL(CONFIG.apiUrl);
-        url.searchParams.set("action", "logs");
+        url.searchParams.set("action", view === "invitaciones" ? "rsvpLogs" : "logs");
         url.searchParams.set("uh", c.uh);
         url.searchParams.set("ph", c.ph);
         const res = await fetch(url.toString());
@@ -197,20 +262,7 @@
           return false;
         }
         const rows = data.eventos || [];
-        if (!rows.length) {
-          box.innerHTML = '<p class="empty">Aún no hay movimientos. Cuando alguien elija o devuelva un detalle, aparecerá aquí.</p>';
-          return true;
-        }
-        box.innerHTML = `<table>
-          <thead><tr><th>Fecha</th><th>Acción</th><th>Detalle</th><th>Nombre</th><th>Id</th></tr></thead>
-          <tbody>${rows.map(r => `<tr>
-            <td>${esc(r.fecha)}</td>
-            <td><span class="pill ${r.accion === "devolver" ? "devolver" : (r.accion === "intento" ? "devolver" : "elegir")}">${r.accion === "devolver" ? "Devuelto" : (r.accion === "intento" ? "Intento" : "Elegido")}</span></td>
-            <td>${esc(r.articulo)}</td>
-            <td>${esc(r.nombre)}</td>
-            <td>${esc(r.id)}</td>
-          </tr>`).join("")}</tbody>
-        </table>`;
+        box.innerHTML = view === "invitaciones" ? tableRsvp(rows) : tableHogar(rows);
         return true;
       } catch (e) {
         box.innerHTML = '<p class="empty">No se pudo leer la bitácora. Revisa la URL /exec.</p>';
@@ -227,6 +279,8 @@
     document.getElementById("loginBtn").addEventListener("click", login);
     document.getElementById("pass").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
     document.getElementById("refreshBtn").addEventListener("click", loadLogs);
+    document.getElementById("viewHogarBtn").addEventListener("click", () => setView("hogar"));
+    document.getElementById("viewRsvpBtn").addEventListener("click", () => setView("invitaciones"));
     document.getElementById("logoutBtn").addEventListener("click", () => {
       sessionStorage.removeItem("hs-admin");
       showLogin(false);
@@ -237,6 +291,5 @@
       loadLogs();
     }
   </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a348ebc16ebeb2bc',t:'MTc4ODMxNDQyNA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f"}' crossorigin="anonymous"></script>
 </body>
 </html>
