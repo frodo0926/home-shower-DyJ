@@ -114,24 +114,59 @@
 
     .hero {
       text-align: center;
-      padding: 88px 22px 36px;
+      padding: 92px 22px 48px;
       background: var(--paper);
     }
-    .hero .kicker { color: var(--terra); }
-    .hero h1 {
-      font-family: Fraunces, Georgia, serif;
+    .hero-kicker {
+      margin: 0;
+      font-size: clamp(18px, 2.6vw, 28px);
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--terra);
       font-weight: 500;
-      font-size: clamp(34px, 6.4vw, 58px);
-      line-height: 1.08;
-      margin: 14px auto 10px;
-      max-width: 16ch;
     }
-    .mono {
+    .hero-names {
       font-family: Fraunces, Georgia, serif;
       font-style: italic;
+      font-weight: 400;
+      font-size: clamp(64px, 15vw, 128px);
+      line-height: 0.88;
+      margin: 18px 0 0;
+      color: var(--espresso);
+    }
+    .hero-names span { display: block; }
+    .hero-names .amp {
+      display: block;
+      font-size: 0.42em;
+      line-height: 1;
       color: var(--rose);
-      font-size: 22px;
-      margin: 8px 0 0;
+      margin: 0.06em 0 0.04em;
+      font-weight: 400;
+    }
+    .hero-date {
+      margin: 28px 0 0;
+      font-size: clamp(12px, 1.6vw, 15px);
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--terra);
+      font-weight: 500;
+    }
+    .hero-lead-kicker {
+      margin: 48px 0 0;
+      font-size: 12px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--terra);
+      font-weight: 600;
+    }
+    .hero-lead {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(22px, 3.4vw, 32px);
+      line-height: 1.25;
+      margin: 12px auto 0;
+      max-width: 16ch;
+      color: var(--espresso);
     }
 
     .photo-frame { overflow: hidden; background: #1a1614; }
@@ -226,27 +261,36 @@
       padding: 56px 22px 64px;
     }
     .together-grid {
-      max-width: 980px;
+      max-width: 1040px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 36px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+      gap: 28px 48px;
       align-items: center;
     }
     .shot-2 {
+      min-width: 0;
       width: 100%;
-      height: min(78vh, 720px);
-      border-radius: 24px 120px 24px 24px;
+      height: min(68vh, 580px);
+      border-radius: 24px 96px 24px 24px;
       box-shadow: var(--shadow);
-      transform: rotate(1.6deg);
+      transform: rotate(-1.2deg);
+      justify-self: stretch;
     }
     .shot-2 img { object-position: 50% 28%; }
-    .shot-2:hover { transform: rotate(0) translateY(-8px); }
+    .shot-2:hover { transform: rotate(0) translateY(-6px); }
+    .together-copy {
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+      padding: 8px 4px 8px 0;
+    }
     .together-copy .kicker { color: var(--terra); }
     .together-copy h2 {
-      font-size: clamp(28px, 4vw, 40px);
+      font-size: clamp(26px, 3.6vw, 38px);
       margin: 10px 0 0;
-      line-height: 1.15;
+      line-height: 1.2;
+      overflow-wrap: break-word;
     }
 
     .dress {
@@ -477,10 +521,11 @@
 
     @media (max-width: 820px) {
       .facts { grid-template-columns: 1fr; }
-      .together-grid { grid-template-columns: 1fr; }
+      .together-grid { grid-template-columns: 1fr; gap: 22px; }
+      .together-copy { padding: 0; }
       .shot-1, .shot-2 { transform: none; }
       .shot-1 { height: 58vh; border-radius: 140px 140px 16px 16px; }
-      .shot-2 { height: 64vh; border-radius: 20px 72px 20px 20px; }
+      .shot-2 { height: min(70vh, 560px); border-radius: 20px 72px 20px 20px; }
       .map-card iframe { height: 240px; }
       .music-widget span { display: none; }
     }
@@ -495,7 +540,7 @@
     </span>
     <span>L-O-V-E</span>
   </button>
-  <audio id="loveTrack" src="audio/l-o-v-e.mp3" preload="metadata" loop playsinline></audio>
+  <audio id="loveTrack" src="audio/l-o-v-e.mp3" preload="auto" loop playsinline></audio>
 
   <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Resumen de la boda">
     <div class="intro-card">
@@ -507,9 +552,15 @@
   </div>
 
   <header class="hero">
-    <div class="kicker">Con inmensa alegría</div>
-    <h1>Queremos compartir este momento contigo</h1>
-    <p class="mono">J&amp;D</p>
+    <p class="hero-kicker">Nuestra boda</p>
+    <h1 class="hero-names">
+      <span>Jimena</span>
+      <span class="amp">&amp;</span>
+      <span>Daniel</span>
+    </h1>
+    <p class="hero-date">29 · Noviembre · 2026</p>
+    <p class="hero-lead-kicker">Con inmensa alegría</p>
+    <p class="hero-lead">Queremos compartir este momento contigo</p>
   </header>
 
   <div class="shot-1-wrap">
@@ -560,7 +611,7 @@
     </div>
   </section>
 
-  <section class="dress">
+  <sectioection class="dress">
     <div class="dress-inner">
       <div class="kicker">Una nota especial</div>
       <h2 class="serif">Código de Vestuario <em>Dress Code</em></h2>
@@ -648,10 +699,16 @@
     const PLAY = '<path d="M8 5.14v14l11-7-11-7z"/>';
     const PAUSE = '<path d="M7 5h3v14H7zm7 0h3v14h-3z"/>';
 
+    let introClosed = false;
+    let userPaused = false;
+    let unlockArmed = false;
+
     function hideIntro() {
+      if (introClosed) return;
+      introClosed = true;
       intro.classList.add("is-fading");
       setTimeout(() => intro.classList.add("is-gone"), 950);
-      tryPlay();
+      startMusic();
     }
     setTimeout(hideIntro, CONFIG.introFadeMs);
     intro.addEventListener("click", hideIntro);
@@ -661,14 +718,42 @@
       musicBtn.setAttribute("aria-pressed", on ? "true" : "false");
       musicIcon.innerHTML = on ? PAUSE : PLAY;
     }
-    function tryPlay() {
-      audio.play().then(() => setPlayingUi(true)).catch(() => setPlayingUi(false));
+    function armUnlock() {
+      if (unlockArmed || userPaused) return;
+      unlockArmed = true;
+      const unlock = () => {
+        if (userPaused || !audio.paused) return;
+        audio.play().then(() => setPlayingUi(true)).catch(() => {});
+      };
+      ["pointerdown", "keydown", "touchstart"].forEach(ev => {
+        document.addEventListener(ev, unlock, { once: true, capture: true, passive: true });
+      });
     }
-    musicBtn.addEventListener("click", () => {
-      if (audio.paused) tryPlay();
-      else { audio.pause(); setPlayingUi(false); }
+    function startMusic() {
+      if (userPaused) return;
+      const play = audio.play();
+      if (!play || typeof play.then !== "function") {
+        setPlayingUi(!audio.paused);
+        return;
+      }
+      play.then(() => setPlayingUi(true)).catch(() => {
+        setPlayingUi(false);
+        armUnlock();
+      });
+    }
+    musicBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (!audio.paused) {
+        userPaused = true;
+        audio.pause();
+        setPlayingUi(false);
+        return;
+      }
+      userPaused = false;
+      startMusic();
     });
     audio.addEventListener("ended", () => setPlayingUi(false));
+    audio.addEventListener("playing", () => setPlayingUi(true));
 
     const overlay = document.getElementById("overlay");
     const guestsWrap = document.getElementById("guestsWrap");
