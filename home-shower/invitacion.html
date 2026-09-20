@@ -19,13 +19,15 @@
       --shadow: 0 22px 48px rgba(75, 63, 56, 0.16);
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     body {
       margin: 0;
       color: var(--espresso);
       font-family: Outfit, "Segoe UI", sans-serif;
       background: var(--paper);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      max-width: 100%;
     }
 
     .music-widget {
@@ -185,6 +187,7 @@
     .shot-1-wrap {
       background: var(--paper);
       padding: 0 0 48px;
+      overflow: hidden;
     }
     .shot-1 {
       width: min(380px, 78vw);
@@ -295,7 +298,7 @@
 
     .dress {
       background: var(--paper);
-      padding: 72px 22px 56px;
+      padding: 72px 22px 120px;
     }
     .dress-inner { max-width: 720px; margin: 0 auto; text-align: center; }
     .dress .kicker { color: var(--terra); }
@@ -338,6 +341,7 @@
       flex-wrap: wrap;
       gap: 18px;
       justify-content: center;
+      margin-bottom: 12px;
     }
     .swatch { width: 92px; text-align: center; }
     .swatch i {
@@ -374,6 +378,8 @@
       padding: 80px 22px 72px;
       background: var(--rose);
       color: var(--espresso);
+      width: 100%;
+      margin: 0;
     }
     .invite .kicker { color: var(--espresso); opacity: 0.7; }
     .invite h2 {
@@ -404,6 +410,9 @@
       color: var(--arena);
       font-size: 14px;
       line-height: 1.7;
+      width: 100%;
+      margin: 0;
+      position: relative;
     }
     footer strong {
       display: block;
@@ -834,5 +843,5 @@
       if (e.key === "Enter") sendRsvp();
     });
   </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3ddcd7e3b439cef',t:'MTc4OTg3NTU2Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
