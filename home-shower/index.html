@@ -9,30 +9,31 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --paper: #FBF7F4;
-      --blush: #E8D8CE;
-      --rose: #B98F88;
-      --taupe: #7A6258;
-      --ink: #3B2F2A;
-      --mist: #E8D8CE;
-      --khaki: #E8D8CE;
-      --olive: #3B2F2A;
-      --moss: #7A6258;
-      --sage: #B98F88;
-      --slate: #B98F88;
-      --sky: #E8D8CE;
-      --muted: #7A6258;
-      --surface: #FFFCFA;
-      --shadow: 0 18px 40px rgba(59, 47, 42, 0.10);
+      /* Paleta: Navy #1F2A44 · Warm Beige #E8DCC8 · Soft Gold #C6A75E */
+      --paper: #F6F1E7;      /* fondo beige cálido claro */
+      --blush: #E8DCC8;      /* warm beige */
+      --rose: #C6A75E;       /* soft gold (acento) */
+      --taupe: #4A556E;      /* navy atenuado para texto secundario */
+      --ink: #1F2A44;        /* navy: texto principal */
+      --mist: #E8DCC8;       /* warm beige */
+      --khaki: #DED0B8;      /* beige un poco más marcado para bordes */
+      --olive: #1F2A44;      /* navy: elementos oscuros/botones */
+      --moss: #6B7284;       /* navy grisáceo para labels */
+      --sage: #C6A75E;       /* soft gold */
+      --slate: #C6A75E;      /* soft gold */
+      --sky: #E8DCC8;        /* warm beige */
+      --muted: #4A556E;      /* navy atenuado */
+      --surface: #FFFDF9;    /* superficie casi blanca cálida */
+      --shadow: 0 18px 40px rgba(31, 42, 68, 0.14);
       --radius: 20px;
 
-      /* Acentos vivos para energía elegante */
-      --accent-terra: #C97B5A;
-      --accent-gold: #D9A566;
-      --accent-plum: #9C6B7A;
-      --accent-sage: #8FA47C;
-      --glow-warm: rgba(217, 165, 102, 0.35);
-      --petal: rgba(185, 143, 136, 0.55);
+      /* Acentos vivos para energía elegante (derivados de la paleta) */
+      --accent-terra: #C6A75E;   /* soft gold */
+      --accent-gold: #D9BE7E;    /* dorado más claro para brillos */
+      --accent-plum: #1F2A44;    /* navy como acento profundo */
+      --accent-sage: #A9B0C0;    /* navy claro/gris azulado */
+      --glow-warm: rgba(198, 167, 94, 0.38);
+      --petal: rgba(198, 167, 94, 0.5);
 
       /* Curvas y tiempos de animación */
       --ease-out-soft: cubic-bezier(.19, 1, .22, 1);
@@ -323,7 +324,7 @@
     }
     .stat:hover {
       transform: translateY(-4px);
-      box-shadow: 0 14px 30px rgba(59, 47, 42, 0.12);
+      box-shadow: 0 14px 30px rgba(31, 42, 68, 0.14);
     }
     .stat .num {
       font-family: Fraunces, Georgia, serif;
@@ -434,20 +435,24 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 22px;
+      align-items: start; /* evita que las tarjetas se estiren a la fila más alta */
     }
 
     .card-reveal {
       display: block;
       perspective: 1400px;
+      height: 440px;        /* misma altura para todas las tarjetas */
+      min-height: 440px;
+      max-height: 440px;
     }
 
     .scene {
+      height: 440px;        /* altura explícita, no depende del contenido */
       transform-style: preserve-3d;
       transition: transform .35s var(--ease-out-soft);
       will-change: transform;
     }
-    /* Flotación en reposo en .scene (translateY; el flip vive en el hijo, no se afecta).
-       Se activa cuando la tarjeta ya apareció, para no chocar con el zoom-in del reveal. */
+    /* Flotación en reposo en .scene (translateY; el flip vive en el hijo, no se afecta). */
     .card-reveal.in-view .scene {
       animation: floaty 7s var(--ease-out-soft) infinite;
       animation-delay: var(--float-delay, 0s);
@@ -456,11 +461,19 @@
     .card-reveal .scene.tilting { animation: none; }
     .flip {
       position: relative;
-      height: 440px;
+      height: 100%;
       transform-style: preserve-3d;
       transition: transform 0.9s cubic-bezier(.19,1,.22,1);
     }
     .flip.is-flipped { transform: rotateY(180deg); }
+    /* Giro celebratorio al reservar: dos vueltas y media (900°) y queda en el reverso */
+    .flip.spin-reserve {
+      animation: spin-reserve 1.6s var(--ease-out-soft);
+    }
+    @keyframes spin-reserve {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(900deg); }
+    }
     .face {
       position: absolute;
       inset: 0;
@@ -477,7 +490,6 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      position: relative;
     }
     /* Reflejo que cruza al pasar el mouse */
     .face-front::after {
@@ -501,11 +513,11 @@
     }
     /* Realce de sombra y elevación al hover */
     .card-reveal:hover .face {
-      box-shadow: 0 26px 54px rgba(59, 47, 42, 0.20);
+      box-shadow: 0 26px 54px rgba(31, 42, 68, 0.22);
     }
     .face-back {
       transform: rotateY(180deg);
-      background: linear-gradient(165deg, #FBF7F4 0%, #E8D8CE 100%);
+      background: linear-gradient(165deg, var(--surface) 0%, var(--blush) 100%);
       border: 1px solid var(--rose);
       padding: 20px 18px 14px;
       display: flex;
@@ -515,7 +527,7 @@
       color: var(--ink);
     }
     .flip.is-flipped .face-back {
-      box-shadow: 0 16px 36px rgba(185, 143, 136, 0.28);
+      box-shadow: 0 16px 36px rgba(198, 167, 94, 0.30);
     }
 
     .icon-well {
@@ -576,7 +588,7 @@
       border-radius: 12px;
       cursor: pointer;
     }
-    .choose-btn:hover { background: #2a211e; }
+    .choose-btn:hover { background: #141c30; }
 
     .face-back .icon-well {
       width: 110px;
@@ -671,7 +683,7 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(59, 47, 42, 0.42);
+      background: rgba(31, 42, 68, 0.48);
       display: none;
       align-items: center;
       justify-content: center;
@@ -749,7 +761,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      background: rgba(59, 47, 42, 0.38);
+      background: rgba(31, 42, 68, 0.44);
       padding: 20px;
     }
     .busy.open { display: flex; }
@@ -759,7 +771,7 @@
       border-radius: 24px;
       padding: 32px 28px 24px;
       text-align: center;
-      box-shadow: 0 24px 50px rgba(59, 47, 42, 0.18);
+      box-shadow: 0 24px 50px rgba(31, 42, 68, 0.20);
       width: min(340px, 92vw);
     }
     .house-loader {
@@ -894,40 +906,49 @@
     .ripple {
       position: absolute;
       border-radius: 50%;
-      background: color-mix(in srgb, white 60%, transparent);
+      background: color-mix(in srgb, white 80%, transparent);
       transform: scale(0);
-      opacity: .6;
+      opacity: .85;
       pointer-events: none;
-      animation: ripple-go .6s var(--ease-out-soft) forwards;
+      animation: ripple-go .7s var(--ease-out-soft) forwards;
     }
     @keyframes ripple-go {
-      to { transform: scale(2.4); opacity: 0; }
+      to { transform: scale(2.8); opacity: 0; }
     }
 
-    /* Rebote al activar un chip */
+    /* Rebote al activar un chip (marcado) */
     @keyframes chip-pop {
       0% { transform: scale(1); }
-      45% { transform: scale(1.12); }
+      35% { transform: scale(1.22) rotate(-2deg); }
+      70% { transform: scale(.96); }
       100% { transform: scale(1); }
     }
-    .chip.active { animation: chip-pop .38s var(--ease-spring); }
+    .chip.active { animation: chip-pop .5s var(--ease-spring); }
     .chip { transition: background .2s, color .2s, border-color .2s, transform .2s var(--ease-spring); }
-    .chip:hover { transform: translateY(-2px); }
+    .chip:hover { transform: translateY(-3px) scale(1.05); }
 
-    /* Latido sutil en el botón elegir + realce interactivo */
-    .choose-btn { transition: transform .2s var(--ease-spring), background .2s; }
-    .card-reveal:hover .choose-btn:not(:hover) { animation: soft-beat 1.6s ease-in-out infinite; }
-    .choose-btn:hover { transform: translateY(-2px); }
-    .choose-btn:active { transform: translateY(0) scale(.97); }
+    /* Latido del botón elegir + realce interactivo (notorio) */
+    .choose-btn { transition: transform .2s var(--ease-spring), background .2s, box-shadow .2s; }
+    .card-reveal:hover .choose-btn:not(:hover) { animation: soft-beat 1.3s ease-in-out infinite; }
+    .choose-btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      background: #141c30;
+      box-shadow: 0 10px 24px rgba(198, 167, 94, 0.45);
+    }
+    .choose-btn:active { transform: translateY(0) scale(.95); }
     @keyframes soft-beat {
-      0%, 100% { transform: translateY(0); box-shadow: 0 0 0 rgba(217,165,102,0); }
-      50% { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(217,165,102,.35); }
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 10px rgba(198,167,94,0); }
+      50% { transform: scale(1.04); box-shadow: 0 8px 22px rgba(198,167,94,.55); }
     }
 
-    /* Realce sutil en controles */
+    /* Realce en controles */
     .ghost-btn { transition: background .2s, transform .2s var(--ease-spring); }
     .ghost-btn:hover { transform: translateY(-2px); }
-    #refreshBtn:active { transform: rotate(-12deg); }
+    #refreshBtn.spinning { animation: refresh-spin .6s var(--ease-out-soft); }
+    @keyframes refresh-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .flip { transition: none; }
@@ -941,7 +962,8 @@
       .scroll-progress, .progress-fill { animation: none !important; }
     }
     @media (max-width: 640px) {
-      .flip { height: 520px; }
+      .card-reveal { height: 520px; min-height: 520px; max-height: 520px; }
+      .scene { height: 520px; }
       .intro-card { margin-top: 18px; }
     }
   </style>
@@ -1596,7 +1618,9 @@
       if (window.HSFX) {
         const firstPaint = !box.dataset.painted;
         box.querySelectorAll(".card-reveal").forEach((el, i) => {
-          el.style.setProperty("--float-delay", (((i % 6) * 0.6).toFixed(2)) + "s");
+          // Flotación sincronizada (mismo delay) para que todas suban y bajen a la vez
+          // y nunca se vean de distinto tamaño entre sí.
+          el.style.setProperty("--float-delay", "0s");
           if (firstPaint) {
             el.classList.add("reveal", "zoom-in", "d" + Math.min(5, (i % 5) + 1));
             window.HSFX.observe(el);
@@ -1719,15 +1743,35 @@
         closeModal();
         await load();
         render();
-        requestAnimationFrame(() => {
-          const el = document.querySelector(`[data-card="${id}"]`);
-          if (el) {
-            el.classList.remove("is-flipped");
-            void el.offsetWidth;
-            el.classList.add("is-flipped");
-            if (window.HSFX) window.HSFX.burstFrom(el, 26);
-          }
-        });
+        // Giro celebratorio de vuelta y media (540°) al reservar.
+        const el = document.querySelector(`[data-card="${id}"]`);
+        if (el) {
+          const scene = el.closest(".card-reveal") ? el.closest(".card-reveal").querySelector(".scene") : null;
+          if (scene) { scene.style.transform = ""; scene.classList.remove("tilting"); }
+          const reduce = window.HSFX && window.HSFX.reduce;
+          el.classList.remove("is-flipped");
+          void el.offsetWidth; // fuerza reflow: el navegador pinta el frente
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              if (reduce) {
+                el.classList.add("is-flipped");
+              } else {
+                // Anima la vuelta y media; al terminar, fija el estado volteado.
+                el.classList.add("spin-reserve");
+                const done = () => {
+                  el.style.transition = "none";           // evita giro inverso al fijar estado
+                  el.classList.remove("spin-reserve");
+                  el.classList.add("is-flipped");
+                  void el.offsetWidth;                     // aplica sin transición
+                  el.style.transition = "";                // restaura para futuras interacciones
+                  el.removeEventListener("animationend", done);
+                };
+                el.addEventListener("animationend", done);
+              }
+              if (window.HSFX) window.HSFX.burstFrom(el, 30);
+            });
+          });
+        }
         toast("Detalle seleccionado exitosamente.");
       } catch (err) {
         console.error(err);
@@ -1826,7 +1870,14 @@
     });
     document.getElementById("searchInput").addEventListener("input", render);
     document.getElementById("filterSelect").addEventListener("change", render);
-    document.getElementById("refreshBtn").addEventListener("click", async () => {
+    document.getElementById("refreshBtn").addEventListener("click", async (ev) => {
+      const rb = ev.currentTarget;
+      if (!(window.HSFX && window.HSFX.reduce)) {
+        rb.classList.remove("spinning");
+        void rb.offsetWidth;
+        rb.classList.add("spinning");
+        setTimeout(() => rb.classList.remove("spinning"), 650);
+      }
       showBusy("Actualizando la lista del hogar…");
       try {
         await load();
