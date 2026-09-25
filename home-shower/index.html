@@ -25,6 +25,19 @@
       --surface: #FFFCFA;
       --shadow: 0 18px 40px rgba(59, 47, 42, 0.10);
       --radius: 20px;
+
+      /* Acentos vivos para energía elegante */
+      --accent-terra: #C97B5A;
+      --accent-gold: #D9A566;
+      --accent-plum: #9C6B7A;
+      --accent-sage: #8FA47C;
+      --glow-warm: rgba(217, 165, 102, 0.35);
+      --petal: rgba(185, 143, 136, 0.55);
+
+      /* Curvas y tiempos de animación */
+      --ease-out-soft: cubic-bezier(.19, 1, .22, 1);
+      --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+      --reveal-dur: 0.85s;
     }
 
     * { box-sizing: border-box; }
@@ -48,6 +61,80 @@
       mix-blend-mode: multiply;
     }
     .page { position: relative; z-index: 1; }
+
+    /* Barra de progreso de scroll (línea fina superior) */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0;
+      z-index: 90;
+      background: linear-gradient(90deg, var(--accent-sage), var(--accent-gold), var(--accent-terra));
+      background-size: 200% 100%;
+      animation: gradient-slide 5s ease infinite;
+      transition: width .08s linear;
+      pointer-events: none;
+    }
+
+    /* Botón volver arriba */
+    .to-top {
+      position: fixed;
+      right: 20px;
+      bottom: 22px;
+      z-index: 65;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--khaki) 80%, white);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(8px);
+      color: var(--olive);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(16px) scale(.9);
+      pointer-events: none;
+      transition: opacity .35s var(--ease-out-soft), transform .35s var(--ease-spring), background .2s;
+    }
+    .to-top.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .to-top:hover {
+      background: var(--olive);
+      color: var(--paper);
+    }
+    .to-top svg { width: 22px; height: 22px; display: block; }
+
+    /* Capa ambiental de pétalos cayendo (detrás del contenido) */
+    .petal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      top: -8vh;
+      width: var(--size, 14px);
+      height: var(--size, 14px);
+      background: radial-gradient(circle at 30% 30%,
+        color-mix(in srgb, var(--accent-gold) 60%, white) 0%,
+        var(--petal) 60%,
+        transparent 72%);
+      border-radius: 60% 40% 55% 45% / 55% 45% 60% 40%;
+      opacity: 0;
+      animation: petal-fall var(--dur, 14s) linear infinite;
+      animation-delay: var(--delay, 0s);
+      filter: blur(0.2px);
+    }
+    .petal.p-rose { background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-plum) 55%, white) 0%, var(--petal) 62%, transparent 74%); }
+    .petal.p-sage { background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-sage) 55%, white) 0%, rgba(143,164,124,.45) 62%, transparent 74%); }
 
     .hero {
       text-align: center;
@@ -100,6 +187,7 @@
     .hero-art-wrap {
       margin-top: 28px;
       overflow: hidden;
+      position: relative;
     }
     .hero-art {
       width: 100%;
@@ -107,6 +195,33 @@
       object-fit: cover;
       object-position: center 70%;
       display: block;
+      transform: scale(1.06);
+      will-change: transform;
+    }
+    /* Luz cálida que da vida a la ilustración */
+    .hero-art-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(120% 80% at 50% 12%, var(--glow-warm) 0%, transparent 55%),
+        linear-gradient(to bottom, transparent 60%, color-mix(in srgb, var(--paper) 92%, transparent) 100%);
+      mix-blend-mode: screen;
+      animation: glow-pulse 7s ease-in-out infinite;
+    }
+    .hero-art-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background: linear-gradient(to bottom, transparent 68%, var(--paper) 100%);
+    }
+
+    /* Rama de olivo con flotar sutil (solo tras aparecer, para no chocar con el reveal) */
+    .branch.in-view {
+      animation: floaty 6.5s var(--ease-out-soft) infinite;
     }
 
     .wrap { max-width: 1120px; margin: 0 auto; padding: 0 22px 80px; }
@@ -186,29 +301,78 @@
 
     .stats {
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin: 8px 0 30px;
+    }
+    .stat-row {
+      display: flex;
       justify-content: center;
-      gap: 28px;
+      gap: 20px;
       flex-wrap: wrap;
-      margin: 8px 0 28px;
     }
     .stat {
-      min-width: 140px;
-      background: var(--surface);
+      min-width: 132px;
+      background: color-mix(in srgb, var(--surface) 90%, transparent);
       border: 1px solid var(--khaki);
       border-radius: 16px;
-      padding: 14px 18px;
+      padding: 16px 20px;
       text-align: center;
+      transition: transform .3s var(--ease-spring), box-shadow .3s var(--ease-out-soft);
+    }
+    .stat:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(59, 47, 42, 0.12);
     }
     .stat .num {
       font-family: Fraunces, Georgia, serif;
-      font-size: 30px;
+      font-size: 32px;
       color: var(--olive);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
     }
+    .stat.accent .num { color: var(--accent-terra); }
     .stat .lbl {
       font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--moss);
+      margin-top: 6px;
+    }
+
+    /* Barra de progreso: el hogar se va llenando */
+    .progress-wrap {
+      width: min(560px, 92%);
+      text-align: center;
+    }
+    .progress-cap {
+      font-family: Fraunces, Georgia, serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--taupe);
+      margin: 0 0 8px;
+    }
+    .progress-track {
+      height: 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--khaki) 55%, white);
+      border: 1px solid color-mix(in srgb, var(--khaki) 80%, white);
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-sage), var(--accent-gold), var(--accent-terra));
+      background-size: 200% 100%;
+      transition: width 1.1s var(--ease-out-soft);
+      animation: gradient-slide 5s ease infinite;
+    }
+    @keyframes gradient-slide {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     .controls {
@@ -272,7 +436,24 @@
       gap: 22px;
     }
 
-    .scene { perspective: 1400px; }
+    .card-reveal {
+      display: block;
+      perspective: 1400px;
+    }
+
+    .scene {
+      transform-style: preserve-3d;
+      transition: transform .35s var(--ease-out-soft);
+      will-change: transform;
+    }
+    /* Flotación en reposo en .scene (translateY; el flip vive en el hijo, no se afecta).
+       Se activa cuando la tarjeta ya apareció, para no chocar con el zoom-in del reveal. */
+    .card-reveal.in-view .scene {
+      animation: floaty 7s var(--ease-out-soft) infinite;
+      animation-delay: var(--float-delay, 0s);
+    }
+    /* Durante el tilt desactivamos la flotación para que el transform inline mande */
+    .card-reveal .scene.tilting { animation: none; }
     .flip {
       position: relative;
       height: 440px;
@@ -296,6 +477,31 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      position: relative;
+    }
+    /* Reflejo que cruza al pasar el mouse */
+    .face-front::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(100deg,
+        transparent 0%,
+        color-mix(in srgb, white 65%, transparent) 50%,
+        transparent 100%);
+      transform: translateX(-160%) skewX(-18deg);
+      pointer-events: none;
+      opacity: 0;
+    }
+    .card-reveal:hover .flip:not(.is-flipped) .face-front::after {
+      opacity: 1;
+      animation: shimmer 0.9s var(--ease-out-soft);
+    }
+    /* Realce de sombra y elevación al hover */
+    .card-reveal:hover .face {
+      box-shadow: 0 26px 54px rgba(59, 47, 42, 0.20);
     }
     .face-back {
       transform: rotateY(180deg);
@@ -605,9 +811,134 @@
       100% { stroke-dashoffset: 1; }
     }
 
+    /* ===== Utilidades de animación (reveal al hacer scroll) ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity var(--reveal-dur) var(--ease-out-soft),
+        transform var(--reveal-dur) var(--ease-out-soft);
+      will-change: opacity, transform;
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: none;
+    }
+    /* Variantes de dirección */
+    .reveal.from-left { transform: translateX(-32px); }
+    .reveal.from-right { transform: translateX(32px); }
+    .reveal.zoom-in { transform: scale(.94); }
+    .reveal.from-left.in-view,
+    .reveal.from-right.in-view,
+    .reveal.zoom-in.in-view { transform: none; }
+
+    /* Reveal solo-opacidad (para elementos con su propia animación de transform) */
+    .reveal.fade-only { transform: none; }
+    .reveal.fade-only.in-view { transform: none; }
+
+    /* Retardos escalonados */
+    .reveal.d1 { transition-delay: .08s; }
+    .reveal.d2 { transition-delay: .16s; }
+    .reveal.d3 { transition-delay: .24s; }
+    .reveal.d4 { transition-delay: .32s; }
+    .reveal.d5 { transition-delay: .40s; }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-120%) skewX(-18deg); }
+      100% { transform: translateX(220%) skewX(-18deg); }
+    }
+    @keyframes petal-fall {
+      0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+      10% { opacity: .8; }
+      90% { opacity: .7; }
+      100% { transform: translateY(110vh) translateX(var(--drift, 40px)) rotate(var(--spin, 320deg)); opacity: 0; }
+    }
+    @keyframes glow-pulse {
+      0%, 100% { opacity: .5; }
+      50% { opacity: .9; }
+    }
+
+    /* Confeti de pétalos al reservar */
+    .burst-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      width: var(--c-size, 12px);
+      height: var(--c-size, 12px);
+      background: var(--c-color, var(--accent-gold));
+      border-radius: 60% 40% 55% 45% / 55% 45% 60% 40%;
+      opacity: 0;
+      will-change: transform, opacity;
+      animation: confetti-fly var(--c-dur, 1.2s) var(--ease-out-soft) forwards;
+    }
+    @keyframes confetti-fly {
+      0% { transform: translate(0, 0) scale(.4) rotate(0deg); opacity: 0; }
+      12% { opacity: 1; }
+      100% {
+        transform: translate(var(--c-dx, 0), var(--c-dy, -120px)) scale(1) rotate(var(--c-rot, 220deg));
+        opacity: 0;
+      }
+    }
+
+    /* Ripple (onda) al hacer click en botones */
+    .rippling { position: relative; overflow: hidden; }
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: color-mix(in srgb, white 60%, transparent);
+      transform: scale(0);
+      opacity: .6;
+      pointer-events: none;
+      animation: ripple-go .6s var(--ease-out-soft) forwards;
+    }
+    @keyframes ripple-go {
+      to { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* Rebote al activar un chip */
+    @keyframes chip-pop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+    .chip.active { animation: chip-pop .38s var(--ease-spring); }
+    .chip { transition: background .2s, color .2s, border-color .2s, transform .2s var(--ease-spring); }
+    .chip:hover { transform: translateY(-2px); }
+
+    /* Latido sutil en el botón elegir + realce interactivo */
+    .choose-btn { transition: transform .2s var(--ease-spring), background .2s; }
+    .card-reveal:hover .choose-btn:not(:hover) { animation: soft-beat 1.6s ease-in-out infinite; }
+    .choose-btn:hover { transform: translateY(-2px); }
+    .choose-btn:active { transform: translateY(0) scale(.97); }
+    @keyframes soft-beat {
+      0%, 100% { transform: translateY(0); box-shadow: 0 0 0 rgba(217,165,102,0); }
+      50% { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(217,165,102,.35); }
+    }
+
+    /* Realce sutil en controles */
+    .ghost-btn { transition: background .2s, transform .2s var(--ease-spring); }
+    .ghost-btn:hover { transform: translateY(-2px); }
+    #refreshBtn:active { transform: rotate(-12deg); }
+
     @media (prefers-reduced-motion: reduce) {
       .flip { transition: none; }
       .house-trace circle { animation: none; stroke-dashoffset: 0; }
+      .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .petal-layer { display: none !important; }
+      .branch.in-view, .card-reveal.in-view .scene { animation: none !important; }
+      .hero-art-wrap::after { animation: none !important; }
+      .scene { transition: none !important; }
+      .chip.active, .card-reveal:hover .choose-btn:not(:hover),
+      .scroll-progress, .progress-fill { animation: none !important; }
     }
     @media (max-width: 640px) {
       .flip { height: 520px; }
@@ -616,6 +947,12 @@
   </style>
 </head>
 <body>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <button class="to-top" id="toTop" type="button" aria-label="Volver arriba">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 19V5" /><path d="m5 12 7-7 7 7" />
+    </svg>
+  </button>
   <div class="page">
     <header class="hero">
       <div class="eyebrow">Una casa se llena de amor</div>
@@ -789,6 +1126,223 @@
 
   </script>
   <script>
+    /* ===== Motor de animación visual (independiente de la lógica de reservas) ===== */
+    window.HSFX = (function () {
+      const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // Observer de reveal reutilizable
+      const revealObserver = ("IntersectionObserver" in window) && !reduce
+        ? new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("in-view");
+                obs.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" })
+        : null;
+
+      function observe(el) {
+        if (!el) return;
+        if (!revealObserver) { el.classList.add("in-view"); return; }
+        revealObserver.observe(el);
+      }
+
+      // Marca un elemento (o selección) como reveal y lo observa
+      function reveal(target, opts) {
+        opts = opts || {};
+        const els = typeof target === "string" ? document.querySelectorAll(target) : [target];
+        els.forEach((el, i) => {
+          if (!el) return;
+          el.classList.add("reveal");
+          if (opts.variant) el.classList.add(opts.variant);
+          if (opts.stagger) {
+            const d = Math.min(5, (opts.startDelay || 0) + i + 1);
+            el.classList.add("d" + d);
+          } else if (opts.delayClass) {
+            el.classList.add(opts.delayClass);
+          }
+          observe(el);
+        });
+      }
+
+      // Parallax del hero: reacciona al scroll y al mouse (suave, con rAF)
+      function heroParallax(imgSel) {
+        if (reduce) return;
+        const img = document.querySelector(imgSel);
+        if (!img) return;
+        let mx = 0, my = 0, sy = 0, raf = null;
+        const apply = () => {
+          raf = null;
+          const tx = mx * 14;
+          const ty = my * 10 + sy * 0.06;
+          img.style.transform = `scale(1.06) translate3d(${tx}px, ${ty}px, 0)`;
+        };
+        const schedule = () => { if (!raf) raf = requestAnimationFrame(apply); };
+        window.addEventListener("mousemove", (e) => {
+          mx = (e.clientX / window.innerWidth) - 0.5;
+          my = (e.clientY / window.innerHeight) - 0.5;
+          schedule();
+        }, { passive: true });
+        window.addEventListener("scroll", () => {
+          const wrap = img.closest(".hero-art-wrap");
+          if (!wrap) return;
+          const rect = wrap.getBoundingClientRect();
+          sy = Math.max(-120, Math.min(120, -rect.top * 0.5));
+          schedule();
+        }, { passive: true });
+      }
+
+      // Tilt 3D en tarjetas (delegado). Solo actúa sobre tarjetas no volteadas.
+      function cardTilt(containerSel) {
+        if (reduce) return;
+        const container = document.querySelector(containerSel);
+        if (!container) return;
+        const MAX = 9; // grados
+
+        container.addEventListener("mousemove", (e) => {
+          const card = e.target.closest(".card-reveal");
+          if (!card) return;
+          const flip = card.querySelector(".flip");
+          const scene = card.querySelector(".scene");
+          if (!flip || !scene || flip.classList.contains("is-flipped")) return;
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          scene.classList.add("tilting");
+          scene.style.transform =
+            `rotateY(${px * MAX}deg) rotateX(${-py * MAX}deg) translateZ(6px)`;
+        }, { passive: true });
+
+        // Reset al salir de cada tarjeta: limpia el tilt y devuelve la flotación
+        container.addEventListener("mouseout", (e) => {
+          const card = e.target.closest(".card-reveal");
+          if (!card) return;
+          const to = e.relatedTarget;
+          if (to && card.contains(to)) return;
+          const scene = card.querySelector(".scene");
+          if (scene) {
+            scene.style.transform = "";
+            scene.classList.remove("tilting");
+          }
+        }, { passive: true });
+      }
+
+      // Ambiente: pétalos de acuarela cayendo lento (densidad moderada, elegante)
+      function petals(count) {
+        if (reduce) return;
+        const layer = document.createElement("div");
+        layer.className = "petal-layer";
+        layer.setAttribute("aria-hidden", "true");
+        const kinds = ["", "p-rose", "p-sage"];
+        const n = count || 14;
+        for (let i = 0; i < n; i++) {
+          const p = document.createElement("span");
+          p.className = "petal " + kinds[i % kinds.length];
+          const size = 10 + Math.random() * 16;
+          const left = Math.random() * 100;
+          const dur = 12 + Math.random() * 12;
+          const delay = -Math.random() * dur;
+          const drift = (Math.random() * 120 - 60).toFixed(0) + "px";
+          const spin = (Math.random() * 360 + 180).toFixed(0) + "deg";
+          p.style.left = left + "vw";
+          p.style.setProperty("--size", size.toFixed(1) + "px");
+          p.style.setProperty("--dur", dur.toFixed(1) + "s");
+          p.style.setProperty("--delay", delay.toFixed(1) + "s");
+          p.style.setProperty("--drift", drift);
+          p.style.setProperty("--spin", spin);
+          layer.appendChild(p);
+        }
+        document.body.appendChild(layer);
+      }
+
+      // Confeti de pétalos que estalla desde un punto (x, y) de la pantalla
+      const burstColors = [
+        "var(--accent-gold)", "var(--accent-terra)",
+        "var(--accent-plum)", "var(--accent-sage)", "var(--rose)"
+      ];
+      function burst(x, y, amount) {
+        if (reduce) return;
+        const layer = document.createElement("div");
+        layer.className = "burst-layer";
+        layer.setAttribute("aria-hidden", "true");
+        const n = amount || 24;
+        for (let i = 0; i < n; i++) {
+          const c = document.createElement("span");
+          c.className = "confetti";
+          const angle = Math.random() * Math.PI * 2;
+          const dist = 60 + Math.random() * 150;
+          const dx = Math.cos(angle) * dist;
+          const dy = Math.sin(angle) * dist - (60 + Math.random() * 80); // sesgo hacia arriba
+          c.style.left = x + "px";
+          c.style.top = y + "px";
+          c.style.setProperty("--c-size", (8 + Math.random() * 10).toFixed(1) + "px");
+          c.style.setProperty("--c-color", burstColors[i % burstColors.length]);
+          c.style.setProperty("--c-dx", dx.toFixed(0) + "px");
+          c.style.setProperty("--c-dy", dy.toFixed(0) + "px");
+          c.style.setProperty("--c-rot", (Math.random() * 400 - 100).toFixed(0) + "deg");
+          c.style.setProperty("--c-dur", (1 + Math.random() * 0.8).toFixed(2) + "s");
+          layer.appendChild(c);
+        }
+        document.body.appendChild(layer);
+        setTimeout(() => layer.remove(), 2200);
+      }
+
+      // Confeti centrado en un elemento del DOM
+      function burstFrom(el, amount) {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        burst(r.left + r.width / 2, r.top + r.height / 2, amount);
+      }
+
+      // Barra de progreso de scroll + botón volver arriba
+      function scrollUI() {
+        const bar = document.getElementById("scrollProgress");
+        const btn = document.getElementById("toTop");
+        let raf = null;
+        const update = () => {
+          raf = null;
+          const doc = document.documentElement;
+          const max = doc.scrollHeight - doc.clientHeight;
+          const y = window.scrollY || doc.scrollTop;
+          const pct = max > 0 ? (y / max) * 100 : 0;
+          if (bar) bar.style.width = pct + "%";
+          if (btn) btn.classList.toggle("show", y > 480);
+        };
+        const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+        window.addEventListener("scroll", schedule, { passive: true });
+        window.addEventListener("resize", schedule, { passive: true });
+        if (btn) {
+          btn.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+          });
+        }
+        update();
+      }
+
+      // Ripple (onda) al hacer click en botones (delegado, cubre botones dinámicos)
+      function ripples(selector) {
+        if (reduce) return;
+        document.addEventListener("click", (e) => {
+          const btn = e.target.closest(selector);
+          if (!btn) return;
+          const r = btn.getBoundingClientRect();
+          const size = Math.max(r.width, r.height);
+          const span = document.createElement("span");
+          span.className = "ripple";
+          span.style.width = span.style.height = size + "px";
+          span.style.left = (e.clientX - r.left - size / 2) + "px";
+          span.style.top = (e.clientY - r.top - size / 2) + "px";
+          if (!btn.classList.contains("rippling")) btn.classList.add("rippling");
+          btn.appendChild(span);
+          setTimeout(() => span.remove(), 650);
+        }, { passive: true });
+      }
+
+      return { reduce, observe, reveal, heroParallax, cardTilt, petals, burst, burstFrom, scrollUI, ripples };
+    })();
+  </script>
+  <script>
     /* ========= PERSONALIZA AQUÍ ========= */
     const CONFIG = {
       hosts: "Hogar Daniel y Jimena",
@@ -934,10 +1488,65 @@
     function renderStats() {
       const total = regalos.length;
       const taken = regalos.filter(g => g.reservadoPor).length;
-      document.getElementById("statsBar").innerHTML = `
-        <div class="stat"><div class="num">${taken}/${total}</div><div class="lbl">Detalles elegidos</div></div>
-        <div class="stat"><div class="num">${total - taken}</div><div class="lbl">Aún disponibles</div></div>
+      const available = total - taken;
+      const pct = total ? Math.round((taken / total) * 100) : 0;
+      const bar = document.getElementById("statsBar");
+
+      bar.innerHTML = `
+        <div class="stat-row">
+          <div class="stat accent">
+            <div class="num" data-count="${taken}">${taken}</div>
+            <div class="lbl">Detalles elegidos</div>
+          </div>
+          <div class="stat">
+            <div class="num" data-count="${available}">${available}</div>
+            <div class="lbl">Aún disponibles</div>
+          </div>
+          <div class="stat">
+            <div class="num" data-count="${pct}" data-suffix="%">${pct}%</div>
+            <div class="lbl">Del hogar reunido</div>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <p class="progress-cap">Nuestro hogar se va llenando de cariño</p>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
       `;
+
+      // Animaciones visuales (conteo + barra), solo una vez por carga
+      if (window.HSFX && !bar.dataset.animated) {
+        bar.dataset.animated = "1";
+        countUp(bar.querySelectorAll(".num[data-count]"));
+        requestAnimationFrame(() => {
+          const fill = document.getElementById("progressFill");
+          if (fill) fill.style.width = pct + "%";
+        });
+      } else {
+        // En refresh: actualiza directo sin re-animar
+        const fill = document.getElementById("progressFill");
+        if (fill) requestAnimationFrame(() => { fill.style.width = pct + "%"; });
+      }
+    }
+
+    // Conteo ascendente suave (respeta reduced-motion)
+    function countUp(nodes) {
+      const reduce = window.HSFX && window.HSFX.reduce;
+      nodes.forEach(node => {
+        const target = parseInt(node.dataset.count, 10) || 0;
+        const suffix = node.dataset.suffix || "";
+        if (reduce || target === 0) { node.textContent = target + suffix; return; }
+        const dur = 1100;
+        const t0 = performance.now();
+        const step = (now) => {
+          const p = Math.min(1, (now - t0) / dur);
+          const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+          node.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
     }
 
     function renderChips() {
@@ -982,10 +1591,26 @@
       box.querySelectorAll("[data-release]").forEach(btn => {
         btn.addEventListener("click", () => openRelease(btn.dataset.release));
       });
+
+      // Reveal escalonado + flotación desfasada por tarjeta
+      if (window.HSFX) {
+        const firstPaint = !box.dataset.painted;
+        box.querySelectorAll(".card-reveal").forEach((el, i) => {
+          el.style.setProperty("--float-delay", (((i % 6) * 0.6).toFixed(2)) + "s");
+          if (firstPaint) {
+            el.classList.add("reveal", "zoom-in", "d" + Math.min(5, (i % 5) + 1));
+            window.HSFX.observe(el);
+          } else {
+            el.classList.add("in-view");
+          }
+        });
+        box.dataset.painted = "1";
+      }
     }
 
     function cardHtml(item, taken) {
       return `
+      <div class="card-reveal">
         <div class="scene">
           <article class="flip ${taken ? "is-flipped" : ""}" data-card="${item.id}">
             <div class="face face-front">
@@ -1006,7 +1631,8 @@
               <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · Seleccionar otro detalle</button>
             </div>
           </article>
-        </div>`;
+        </div>
+      </div>`;
     }
 
     function setModal(mode, item) {
@@ -1099,6 +1725,7 @@
             el.classList.remove("is-flipped");
             void el.offsetWidth;
             el.classList.add("is-flipped");
+            if (window.HSFX) window.HSFX.burstFrom(el, 26);
           }
         });
         toast("Detalle seleccionado exitosamente.");
@@ -1213,6 +1840,36 @@
         hideBusy();
       }
     });
+
+    // Reveal escalonado de las secciones estáticas (solo efecto visual)
+    (function initSectionReveals() {
+      if (!window.HSFX) return;
+      const seq = [
+        { sel: ".eyebrow", variant: null },
+        { sel: ".hero h1", variant: null },
+        { sel: ".home-name", variant: null },
+        { sel: ".branch", variant: "fade-only" },
+        { sel: ".hero .lead", variant: null },
+        { sel: ".intro-card", variant: null },
+        { sel: ".bono-card", variant: null },
+        { sel: "#statsBar", variant: null },
+        { sel: ".controls", variant: null },
+        { sel: "#chips", variant: null }
+      ];
+      seq.forEach((cfg, i) => {
+        const el = document.querySelector(cfg.sel);
+        if (!el) return;
+        el.classList.add("reveal");
+        if (cfg.variant) el.classList.add(cfg.variant);
+        el.classList.add("d" + Math.min(5, (i % 5) + 1));
+        window.HSFX.observe(el);
+      });
+      window.HSFX.heroParallax(".hero-art");
+      window.HSFX.cardTilt("#grid");
+      window.HSFX.petals(16);
+      window.HSFX.scrollUI();
+      window.HSFX.ripples(".choose-btn, .ghost-btn, .btn-ok, .chip, .to-top");
+    })();
 
     (async function start() {
       showBusy("Abriendo las puertas del hogar…");
