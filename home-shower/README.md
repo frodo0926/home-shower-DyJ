@@ -1,4 +1,4 @@
-# Home Shower · Hogar Daniel y Jimena
+# Home Shower · Alejandro y Brenda
 
 Guía para que **todos los invitados vean la misma lista en vivo** (Google Sheets) y para **publicar el sitio en Vercel**.
 
@@ -30,7 +30,7 @@ Sin Google Sheets, las reservas solo viven en el navegador de cada persona. Con 
 
 1. Entra a [Google Sheets](https://sheets.google.com) con tu cuenta.
 2. **Nueva hoja de cálculo**.
-3. Renómbrala, por ejemplo: `Home Shower Daniel y Jimena`.
+3. Renómbrala, por ejemplo: `Home Shower Alejandro y Brenda`.
 4. Abajo, renombra la pestaña a exactamente: **`Regalos`**.
 
 ### 2. Importa los regalos
@@ -109,7 +109,7 @@ El sitio es estático (`index.html` + carpeta `images`). Vercel lo sirve gratis.
 5. Framework Preset: **Other**.
 6. Root Directory: `.` (la carpeta donde está `index.html`).
 7. **Deploy**.
-8. Te da una URL tipo `https://home-shower-daniel-jimena.vercel.app`.
+8. Te da una URL tipo `https://home-shower-alejandro-brenda.vercel.app`.
 
 Cada vez que hagas `git push`, Vercel vuelve a publicar.
 

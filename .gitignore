@@ -1,0 +1,9 @@
+# Fuente de uso personal (licencia no comercial) - no distribuir
+home-shower/avermont_house/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Dependencias / temporales
+node_modules/

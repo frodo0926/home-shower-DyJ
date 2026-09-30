@@ -1,9 +1,9 @@
 /**
- * Home Shower · Hogar Daniel y Jimena
+ * Home Shower · Alejandro y Brenda
  * Pega este archivo en Extensiones → Apps Script de tu Google Sheet.
  *
  * Hoja requerida: "Regalos"
- * Encabezados (fila 1): id | articulo | categoria | detalle | versiculo | cita | reservadoPor
+ * Encabezados (fila 1): id | articulo | categoria | detalle | reservadoPor | icon
  *
  * Publicar: Implementar → Nueva implementación → Aplicación web
  *   Ejecutar como: Yo
@@ -90,8 +90,6 @@ function readRows_() {
       articulo: rec.articulo || "",
       categoria: rec.categoria || "",
       detalle: rec.detalle || "",
-      versiculo: rec.versiculo || "",
-      cita: rec.cita || "",
       reservadoPor: rec.reservadoPor ? String(rec.reservadoPor).trim() : "",
       icon: rec.icon || ""
     });

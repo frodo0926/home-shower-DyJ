@@ -3,37 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home Shower · Hogar Daniel y Jimena</title>
+  <title>Home Shower · Alejandro y Brenda</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="//fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Great+Vibes&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* Paleta: Navy #1F2A44 · Warm Beige #E8DCC8 · Soft Gold #C6A75E */
-      --paper: #F6F1E7;      /* fondo beige cálido claro */
-      --blush: #E8DCC8;      /* warm beige */
-      --rose: #C6A75E;       /* soft gold (acento) */
-      --taupe: #4A556E;      /* navy atenuado para texto secundario */
-      --ink: #1F2A44;        /* navy: texto principal */
-      --mist: #E8DCC8;       /* warm beige */
-      --khaki: #DED0B8;      /* beige un poco más marcado para bordes */
-      --olive: #1F2A44;      /* navy: elementos oscuros/botones */
-      --moss: #6B7284;       /* navy grisáceo para labels */
-      --sage: #C6A75E;       /* soft gold */
-      --slate: #C6A75E;      /* soft gold */
-      --sky: #E8DCC8;        /* warm beige */
-      --muted: #4A556E;      /* navy atenuado */
-      --surface: #FFFDF9;    /* superficie casi blanca cálida */
-      --shadow: 0 18px 40px rgba(31, 42, 68, 0.14);
+      /* Paleta costera suave: Marino #26384D · Marfil frío #F3F1EC · Azul-agua #7FA6AE */
+      --paper: #F1F0EA;      /* marfil con leve toque frío (fondo) */
+      --blush: #DDE7E6;      /* espuma / agua muy clara */
+      --rose: #7FA6AE;       /* azul-agua desaturado (acento) */
+      --taupe: #4C5C68;      /* marino atenuado para texto secundario */
+      --ink: #26384D;        /* marino profundo: texto principal */
+      --mist: #DDE7E6;       /* espuma */
+      --khaki: #CFD8D4;      /* gris-agua para bordes */
+      --olive: #26384D;      /* marino: elementos oscuros/botones */
+      --moss: #6A7C86;       /* gris azulado para labels */
+      --sage: #7FA6AE;       /* azul-agua */
+      --slate: #7FA6AE;      /* azul-agua */
+      --sky: #DDE7E6;        /* espuma */
+      --muted: #4C5C68;      /* marino atenuado */
+      --surface: #FAFBF9;    /* superficie casi blanca fresca */
+      --shadow: 0 18px 40px rgba(38, 56, 77, 0.14);
       --radius: 20px;
 
-      /* Acentos vivos para energía elegante (derivados de la paleta) */
-      --accent-terra: #C6A75E;   /* soft gold */
-      --accent-gold: #D9BE7E;    /* dorado más claro para brillos */
-      --accent-plum: #1F2A44;    /* navy como acento profundo */
-      --accent-sage: #A9B0C0;    /* navy claro/gris azulado */
-      --glow-warm: rgba(198, 167, 94, 0.38);
-      --petal: rgba(198, 167, 94, 0.5);
+      /* Acentos costeros (derivados de la paleta) */
+      --accent-terra: #7FA6AE;   /* azul-agua */
+      --accent-gold: #A9C6C4;    /* aguamarina claro para brillos */
+      --accent-plum: #26384D;    /* marino como acento profundo */
+      --accent-sage: #9DB6AE;    /* salvia-agua */
+      --glow-warm: rgba(127, 166, 174, 0.34);
+      --petal: rgba(157, 182, 174, 0.5);
 
       /* Curvas y tiempos de animación */
       --ease-out-soft: cubic-bezier(.19, 1, .22, 1);
@@ -60,6 +60,20 @@
       pointer-events: none;
       z-index: 0;
       mix-blend-mode: multiply;
+    }
+    /* Velo de horizonte marino, muy sutil, al fondo de la página */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        linear-gradient(to bottom,
+          transparent 0%,
+          transparent 52%,
+          rgba(127, 166, 174, 0.05) 74%,
+          rgba(127, 166, 174, 0.12) 100%);
     }
     .page { position: relative; z-index: 1; }
 
@@ -137,6 +151,69 @@
     .petal.p-rose { background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-plum) 55%, white) 0%, var(--petal) 62%, transparent 74%); }
     .petal.p-sage { background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent-sage) 55%, white) 0%, rgba(143,164,124,.45) 62%, transparent 74%); }
 
+    /* ===== Capa decorativa marina (fondo, detrás del contenido) ===== */
+    .sea-deco {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .sea {
+      position: fixed;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      /* Muy tenues para no competir con el contenido */
+      opacity: 0.10;
+      filter: saturate(0.9);
+      will-change: transform;
+    }
+    /* Distribución por toda la pantalla (esquinas y bordes) */
+    .sea-octopus    { top: 6vh;   left: -3vw;  width: 260px; opacity: 0.11; animation: sea-float 15s ease-in-out infinite; }
+    .sea-crab       { top: 40vh;  right: -2vw; width: 200px; opacity: 0.10; animation: sea-float 13s ease-in-out infinite 1s; }
+    .sea-turtle     { bottom: 16vh; left: 3vw; width: 190px; opacity: 0.09; animation: sea-float 17s ease-in-out infinite .5s; }
+    .sea-starfish   { top: 20vh;  right: 8vw;  width: 120px; opacity: 0.12; animation: sea-spin 40s linear infinite; }
+    .sea-seaweed    { bottom: 0;  right: 4vw;  width: 150px; opacity: 0.12; transform-origin: bottom center; animation: sea-sway 9s ease-in-out infinite; }
+    .sea-sanddollar { top: 66vh;  right: 14vw; width: 100px; opacity: 0.10; animation: sea-float 14s ease-in-out infinite 2s; }
+    .sea-shell      { top: 12vh;  left: 20vw;  width: 78px;  opacity: 0.11; animation: sea-float 12s ease-in-out infinite .8s; }
+    .sea-conch      { bottom: 22vh; right: 22vw; width: 70px; opacity: 0.10; animation: sea-float 16s ease-in-out infinite 1.5s; }
+    /* Olas ancladas al pie, a lo ancho */
+    .sea-waves {
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      max-width: 640px;
+      opacity: 0.13;
+    }
+
+    @keyframes sea-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-14px) rotate(1.5deg); }
+    }
+    @keyframes sea-sway {
+      0%, 100% { transform: rotate(-3deg); }
+      50%      { transform: rotate(3deg); }
+    }
+    @keyframes sea-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* En pantallas medianas, aligeramos */
+    @media (max-width: 900px) {
+      .sea-turtle, .sea-sanddollar, .sea-conch { display: none; }
+      .sea-octopus { width: 190px; }
+      .sea-crab { width: 150px; }
+    }
+    /* En móvil, dejamos solo acentos mínimos */
+    @media (max-width: 560px) {
+      .sea-crab, .sea-shell, .sea-starfish { display: none; }
+      .sea-octopus { width: 150px; opacity: 0.08; }
+      .sea-seaweed { width: 110px; }
+      .sea-waves { opacity: 0.10; }
+    }
+
     .hero {
       text-align: center;
       padding: 52px 24px 0;
@@ -150,10 +227,10 @@
       margin-bottom: 14px;
     }
     .hero h1 {
-      font-family: Fraunces, Georgia, serif;
-      font-weight: 500;
-      font-size: clamp(44px, 8vw, 82px);
-      line-height: 0.95;
+      font-family: "Great Vibes", Fraunces, Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(58px, 11vw, 112px);
+      line-height: 1.05;
       margin: 0;
       color: var(--olive);
     }
@@ -163,12 +240,12 @@
       color: var(--rose);
     }
     .home-name {
-      font-family: Fraunces, Georgia, serif;
-      font-style: italic;
+      font-family: "Great Vibes", Fraunces, Georgia, serif;
+      font-style: normal;
       font-weight: 400;
-      font-size: clamp(22px, 4vw, 34px);
+      font-size: clamp(30px, 5.5vw, 48px);
       color: var(--rose);
-      margin: 14px 0 0;
+      margin: 10px 0 0;
     }
     .branch {
       width: min(420px, 78vw);
@@ -177,12 +254,15 @@
       display: block;
     }
     .hero .lead {
-      max-width: 560px;
-      margin: 8px auto 0;
+      max-width: 580px;
+      margin: 14px auto 0;
       color: var(--muted);
-      font-size: 17px;
-      line-height: 1.7;
-      font-weight: 300;
+      font-family: Fraunces, Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(18px, 2.4vw, 21px);
+      line-height: 1.85;
+      letter-spacing: 0.005em;
     }
 
     .hero-art-wrap {
@@ -218,6 +298,80 @@
       pointer-events: none;
       z-index: 2;
       background: linear-gradient(to bottom, transparent 68%, var(--paper) 100%);
+    }
+
+    /* ===== Galería "Nuestros recuerdos" ===== */
+    .gallery {
+      max-width: 1120px;
+      margin: 12px auto 0;
+      padding: 0 22px;
+      text-align: center;
+    }
+    .gallery-head {
+      margin-bottom: 26px;
+    }
+    .gallery-head .branch {
+      width: 110px;
+      height: auto;
+      display: block;
+      margin: 0 auto 10px;
+      opacity: 0.9;
+    }
+    .gallery-head h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(26px, 5vw, 40px);
+      color: var(--olive);
+      margin: 0;
+    }
+    /* Carrusel: desplazamiento horizontal continuo hacia la derecha */
+    .gallery-grid {
+      display: flex;
+      gap: 18px;
+      width: max-content;
+      animation: gallery-slide 40s linear infinite;
+    }
+    .gallery-viewport {
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+              mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+    }
+    /* Pausa al pasar el cursor para poder mirar una foto */
+    .gallery-viewport:hover .gallery-grid {
+      animation-play-state: paused;
+    }
+    .gallery-item {
+      margin: 0;
+      flex: 0 0 auto;
+      width: 240px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: var(--surface);
+      aspect-ratio: 2 / 3;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s var(--ease-out-soft);
+    }
+    .gallery-item:hover img {
+      transform: scale(1.04);
+    }
+    /* Mueve la fila hacia la derecha; como duplicamos el set, el bucle es perfecto.
+       Empieza desplazada -50% (segunda copia) y avanza a 0 (primera copia). */
+    @keyframes gallery-slide {
+      from { transform: translateX(-50%); }
+      to   { transform: translateX(0); }
+    }
+    @media (max-width: 720px) {
+      .gallery-item { width: 190px; }
+      .gallery-grid { gap: 12px; }
+    }
+    @media (max-width: 440px) {
+      .gallery-item { width: 160px; }
     }
 
     /* Rama de olivo con flotar sutil (solo tras aparecer, para no chocar con el reveal) */
@@ -271,8 +425,8 @@
       margin: 14px 0 8px;
     }
     .pay-item {
-      min-width: 140px;
-      max-width: 180px;
+      min-width: 150px;
+      max-width: 190px;
     }
     .pay-item img {
       width: 72px;
@@ -283,6 +437,18 @@
       display: block;
       margin: 0 auto 8px;
       background: transparent;
+    }
+    /* Logos oficiales (horizontales): respetan proporción y van sobre fondo blanco */
+    .pay-item img.pay-logo {
+      width: 100%;
+      height: auto;
+      max-width: 150px;
+      max-height: none;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 14px rgba(38, 56, 77, 0.10);
     }
     .pay-item p {
       margin: 0;
@@ -441,13 +607,13 @@
     .card-reveal {
       display: block;
       perspective: 1400px;
-      height: 440px;        /* misma altura para todas las tarjetas */
-      min-height: 440px;
-      max-height: 440px;
+      height: 340px;        /* misma altura para todas las tarjetas */
+      min-height: 340px;
+      max-height: 340px;
     }
 
     .scene {
-      height: 440px;        /* altura explícita, no depende del contenido */
+      height: 340px;        /* altura explícita, no depende del contenido */
       transform-style: preserve-3d;
       transition: transform .35s var(--ease-out-soft);
       will-change: transform;
@@ -546,6 +712,13 @@
       object-fit: contain;
       display: block;
     }
+    /* Foto real: llena el círculo como avatar, con borde suave costero */
+    .icon-well img.gift-photo {
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--khaki) 70%, white),
+                  0 6px 16px rgba(38, 56, 77, 0.12);
+    }
     .face-front {
       text-align: center;
       align-items: center;
@@ -563,11 +736,12 @@
       font-weight: 600;
     }
     .card-title {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 24px;
-      font-weight: 500;
-      line-height: 1.15;
-      margin: 0;
+      font-family: "Great Vibes", Fraunces, Georgia, serif;
+      font-size: clamp(30px, 6vw, 36px);
+      font-weight: 400;
+      line-height: 1.1;
+      margin: 2px 0;
+      color: var(--olive);
     }
     .card-detail {
       color: var(--muted);
@@ -601,13 +775,13 @@
       height: 110px;
     }
     .thanks-name {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 26px;
-      font-style: italic;
-      font-weight: 500;
+      font-family: "Great Vibes", Fraunces, Georgia, serif;
+      font-size: clamp(28px, 5.5vw, 34px);
+      font-style: normal;
+      font-weight: 400;
       margin: 2px 0 10px;
-      line-height: 1.1;
-      color: var(--ink);
+      line-height: 1.05;
+      color: var(--rose);
     }
     .verse {
       font-family: Fraunces, Georgia, serif;
@@ -957,13 +1131,15 @@
       .petal-layer { display: none !important; }
       .branch.in-view, .card-reveal.in-view .scene { animation: none !important; }
       .hero-art-wrap::after { animation: none !important; }
+      .sea { animation: none !important; }
+      .gallery-grid { animation: none !important; }
       .scene { transition: none !important; }
       .chip.active, .card-reveal:hover .choose-btn:not(:hover),
       .scroll-progress, .progress-fill { animation: none !important; }
     }
     @media (max-width: 640px) {
-      .card-reveal { height: 520px; min-height: 520px; max-height: 520px; }
-      .scene { height: 520px; }
+      .card-reveal { height: 400px; min-height: 400px; max-height: 400px; }
+      .scene { height: 400px; }
       .intro-card { margin-top: 18px; }
     }
   </style>
@@ -975,46 +1151,78 @@
       <path d="M12 19V5" /><path d="m5 12 7-7 7 7" />
     </svg>
   </button>
+  <!-- Capa decorativa marina (fondo, detrás del contenido) -->
+  <div class="sea-deco" aria-hidden="true">
+    <img class="sea sea-octopus"    src="images/deco/octopus.png" alt="" />
+    <img class="sea sea-crab"       src="images/deco/crab.png" alt="" />
+    <img class="sea sea-turtle"     src="images/deco/turtle.png" alt="" />
+    <img class="sea sea-starfish"   src="images/deco/starfish.png" alt="" />
+    <img class="sea sea-seaweed"    src="images/deco/seaweed.png" alt="" />
+    <img class="sea sea-sanddollar" src="images/deco/sanddollar.png" alt="" />
+    <img class="sea sea-shell"      src="images/deco/shell.png" alt="" />
+    <img class="sea sea-conch"      src="images/deco/conch.png" alt="" />
+    <img class="sea sea-waves"      src="images/deco/waves.png" alt="" />
+  </div>
+
   <div class="page">
     <header class="hero">
-      <div class="eyebrow">Una casa se llena de amor</div>
       <h1>Home Shower</h1>
-      <p class="home-name">Hogar Daniel y Jimena</p>
-      <img class="branch" src="images/rama-oliva.png" alt="" />
+      <p class="home-name">Alejandro y Brenda</p>
       <p class="lead">
-        Estamos muy felices de comenzar esta nueva etapa juntos y nos encantaría
-        celebrarla contigo. Tu compañía y buenos deseos significan mucho para nosotros
-        mientras preparamos nuestro hogar y nuestra vida juntos.
+        Hoy abrimos las puertas de nuestra primera casa y queremos llenarla de gente
+        que amamos. Más que un regalo, tu presencia y tu cariño son la mejor bienvenida
+        a este nuevo capítulo. Gracias por caminar a nuestro lado y celebrar con nosotros.
       </p>
     </header>
     <div class="hero-art-wrap">
-      <img class="hero-art" src="images/hero-hogar.png" alt="Daniel y Jimena en la puerta de su hogar, ilustración en acuarela" />
+      <img class="hero-art" src="images/comprimidas/PRE.B&A_0508.jpg" alt="Alejandro y Brenda" />
     </div>
+
+    <section class="gallery" aria-label="Nuestros recuerdos">
+      <div class="gallery-head"></div>
+      <div class="gallery-viewport">
+        <div class="gallery-grid">
+          <figure class="gallery-item"><img src="images/comprimidas/PRE.B&A_0278.jpg" alt="Alejandro y Brenda" loading="lazy" /></figure>
+          <figure class="gallery-item"><img src="images/comprimidas/PRE.B&A_0737.jpg" alt="Alejandro y Brenda" loading="lazy" /></figure>
+          <figure class="gallery-item"><img src="images/comprimidas/PRE.B&A_0978.jpg" alt="Alejandro y Brenda" loading="lazy" /></figure>
+          <figure class="gallery-item"><img src="images/comprimidas/PRE.B&A_1202.jpg" alt="Alejandro y Brenda" loading="lazy" /></figure>
+          <figure class="gallery-item"><img src="images/comprimidas/PRE.B&A_1272.jpg" alt="Alejandro y Brenda" loading="lazy" /></figure>
+          <figure class="gallery-item"><img src="images/comprimidas/PRE.B&A_1704.jpg" alt="Alejandro y Brenda" loading="lazy" /></figure>
+          <!-- Copia para bucle continuo del carrusel -->
+          <figure class="gallery-item" aria-hidden="true"><img src="images/comprimidas/PRE.B&A_0278.jpg" alt="" loading="lazy" /></figure>
+          <figure class="gallery-item" aria-hidden="true"><img src="images/comprimidas/PRE.B&A_0737.jpg" alt="" loading="lazy" /></figure>
+          <figure class="gallery-item" aria-hidden="true"><img src="images/comprimidas/PRE.B&A_0978.jpg" alt="" loading="lazy" /></figure>
+          <figure class="gallery-item" aria-hidden="true"><img src="images/comprimidas/PRE.B&A_1202.jpg" alt="" loading="lazy" /></figure>
+          <figure class="gallery-item" aria-hidden="true"><img src="images/comprimidas/PRE.B&A_1272.jpg" alt="" loading="lazy" /></figure>
+          <figure class="gallery-item" aria-hidden="true"><img src="images/comprimidas/PRE.B&A_1704.jpg" alt="" loading="lazy" /></figure>
+        </div>
+      </div>
+    </section>
 
     <main class="wrap">
       <div class="intro-card">
-        Cada detalle es una semilla para nuestro hogar. Al seleccionar un regalo, la tarjeta girará y quedará a tu nombre. Si cambias de parecer, no te preocupes: puedes devolverlo para que otro ser querido lo elija y tú puedas escoger otro.
+        Explora la lista y elige el detalle que quieras regalar. Al seleccionarlo, la tarjeta se reserva a tu nombre. Y si cambias de idea, puedes liberarla para que otra persona la elija.
       </div>
 
       <div class="bono-card">
         <p>
-          ¡Gracias por tu generosidad! Si elegiste la opción de
-          <strong class="hl">bono</strong>, puedes hacer tu transferencia a
-          cualquiera de estas cuentas:
+          ¿Prefieres aportar con un
+          <strong class="hl">bono</strong>? ¡Nos encanta la idea! Puedes enviar tu
+          aporte a cualquiera de estas cuentas:
         </p>
         <div class="pay-row">
           <div class="pay-item">
-            <img src="images/logo-nequi.png" alt="Nequi" width="72" height="72" />
+            <img class="pay-logo" src="images/logo-nequi-real.jpg" alt="Nequi" />
             <p>Nequi: <span class="acct">3102050306</span></p>
           </div>
           <div class="pay-item">
-            <img src="images/logo-breb.png" alt="Llave Bre-B" width="72" height="72" />
+            <img class="pay-logo" src="images/logo-breb-real.jpg" alt="Llave Bre-B" />
             <p>Llave Bre-B: <span class="acct">3115633346</span></p>
           </div>
         </div>
         <p class="bono-note">
-          Por favor, no olvides compartirnos el comprobante y llevar un sobrecito
-          con una nota o la descripción de tu detalle. ¡Agradecemos enormemente tu cariño!
+          Cuando hagas tu transferencia, cuéntanos para saber que fuiste tú. Cada aporte,
+          por pequeño que sea, nos acerca a nuestro hogar soñado. ¡Gracias de corazón!
         </p>
       </div>
 
@@ -1035,7 +1243,7 @@
       <div class="chips" id="chips"></div>
       <div class="grid" id="grid"></div>
 
-      <footer>Hogar Daniel y Jimena · “Yo y mi casa serviremos a Jehová.” Josué 24:15<br />
+      <footer>Alejandro y Brenda · “Yo y mi casa serviremos a Jehová.” Josué 24:15<br />
         <a href="catalogo-iconos.html" style="color:inherit;opacity:.75">H & R Soluciones</a>
       </footer>
     </main>
@@ -1367,16 +1575,38 @@
   <script>
     /* ========= PERSONALIZA AQUÍ ========= */
     const CONFIG = {
-      hosts: "Hogar Daniel y Jimena",
+      hosts: "Alejandro y Brenda",
       storageKey: "home-shower-regalos-v1",
       /* Pega aquí la URL /exec de Google Apps Script (ver README.md) */
+      /* === MODO PRUEBA VISUAL (local, NO toca la base de datos) ===
+         apiUrl está vacío a propósito para probar la selección sin afectar el Google Sheet.
+         PARA REACTIVAR PRODUCCIÓN: borra la línea de abajo (apiUrl: "") y descomenta esta:
       apiUrl: "https://script.google.com/macros/s/AKfycbyT4YjFX5Eix0I2C0Z4jGSjeWzFE4y6AYcUCh2rpbxcynCLhyhfJvVS3nzr2xs-0AA1Tg/exec"
+      */
+      apiUrl: "https://script.google.com/macros/s/AKfycbxVmsKlF2oikY6H6SajbfNtQnLw6FGnUx1_NpRFum5nW6tMYGqdmZBlFybImaJDobCM/exec"
     };
 
     const ICONS = window.HS_ICONS || {};
-    function iconImg(name) {
-      const n = String(name || "gift").toLowerCase().replace(/[^a-z0-9_-]/g, "");
-      return `<img class="gift-icon" src="images/icons/${n}.png" alt="" width="148" height="148" onerror="this.onerror=null;this.src='images/icons/gift.png'">`;
+
+    /* ===== Fotos reales por tipo de ícono (detección automática) =====
+       Solo tienes que colocar tus fotos en la carpeta  images/fotos/  con el
+       MISMO nombre del ícono y extensión .jpg. Por ejemplo:
+         images/fotos/cookware.jpg   images/fotos/towel.jpg   images/fotos/blender.jpg
+       No hay que tocar nada más: si la foto existe se muestra; si no existe (o no
+       carga), aparece automáticamente el ícono ilustrado de siempre.
+       ¿Usas .png en vez de .jpg? Cambia PHOTO_EXT abajo por "png". */
+    const PHOTO_EXT = "jpg";
+
+    function iconImg(item) {
+      const obj = (item && typeof item === "object") ? item : { icon: item };
+      const n = String(obj.icon || "gift").toLowerCase().trim().replace(/[^a-z0-9_-]/g, "");
+      const photo = `images/fotos/${n}.${PHOTO_EXT}`;
+      const iconFallback = `images/icons/${n}.png`;
+      // Intenta cargar la FOTO real; si falla, cae al ícono ilustrado; si ese
+      // también falla, cae al ícono genérico de regalo.
+      return `<img class="gift-icon gift-photo" src="${photo}" alt="" width="148" height="148" loading="lazy" `
+        + `onerror="if(!this.dataset.step){this.dataset.step='1';this.classList.remove('gift-photo');this.src='${iconFallback}';}`
+        + `else{this.onerror=null;this.src='images/icons/gift.png';}">`;
     }
 
     const GIFTS = [
@@ -1499,6 +1729,12 @@
       const next = list.map(hydrate).filter(g => g.id);
       if (!next.length) throw new Error("empty");
       regalos = next;
+    }
+
+    /* Refresca la lista según el modo: API real o local (prueba visual). */
+    async function refreshList() {
+      if (useApi()) { await load(); }
+      else { loadLocal(); }
     }
 
     function escapeHtml(str) {
@@ -1639,18 +1875,16 @@
           <article class="flip ${taken ? "is-flipped" : ""}" data-card="${item.id}">
             <div class="face face-front">
               <span class="cat">${item.categoria}</span>
-              <div class="icon-well">${iconImg(item.icon)}</div>
+              <div class="icon-well">${iconImg(item)}</div>
               <h3 class="card-title">${escapeHtml(item.articulo)}</h3>
               <p class="card-detail">${escapeHtml(item.detalle)}</p>
               <div class="spacer"></div>
               <button class="choose-btn" data-choose="${item.id}" type="button">Elegir este detalle</button>
             </div>
             <div class="face face-back">
-              <div class="icon-well">${iconImg(item.icon)}</div>
-              <div class="thanks-name">Reservado</div>
-              <p class="verse">“${escapeHtml(item.versiculo)}”</p>
-              <div class="cite">${escapeHtml(item.cita)}</div>
-              <p class="thanks-msg">Gracias por bendecir nuestro hogar con el ${escapeHtml(item.articulo)}.</p>
+              <div class="icon-well">${iconImg(item)}</div>
+              <div class="thanks-name">¡Detalle reservado!</div>
+              <p class="thanks-msg"><strong>${escapeHtml(item.articulo)}</strong> ya tiene dueño.<br />Tú lo elegiste para nosotros. 🤍<br />Gracias por ser parte de este nuevo capítulo.</p>
               <div class="spacer"></div>
               <button class="release-btn" data-release="${item.id}" type="button">Cambiar de parecer · Seleccionar otro detalle</button>
             </div>
@@ -1709,7 +1943,7 @@
       const item = regalos.find(g => g.id === pendingId);
       if (!item || item.reservadoPor) {
         closeModal();
-        await load();
+        await refreshList();
         render();
         toast("Ese detalle ya fue seleccionado. La lista se actualizó.");
         return;
@@ -1728,7 +1962,7 @@
           if (!result.success) {
             hideBusy();
             document.getElementById("overlay").classList.add("open");
-            await load();
+            await refreshList();
             render();
             toast("Ese detalle ya fue reservado por alguien más. Se actualizó la lista.");
             return;
@@ -1741,7 +1975,7 @@
         sessionStorage.setItem("home-shower-mine", JSON.stringify([...mine]));
         const id = item.id;
         closeModal();
-        await load();
+        await refreshList();
         render();
         // Giro celebratorio de vuelta y media (540°) al reservar.
         const el = document.querySelector(`[data-card="${id}"]`);
@@ -1802,7 +2036,7 @@
       const item = regalos.find(g => g.id === pendingId);
       if (!item || !item.reservadoPor) {
         closeModal();
-        try { await load(); } catch (e) {}
+        try { await refreshList(); } catch (e) {}
         render();
         return;
       }
@@ -1825,7 +2059,7 @@
             }
             toast("No se pudo devolver el detalle. Actualiza e intenta de nuevo.");
             closeModal();
-            try { await load(); render(); } catch (e) {}
+            try { await refreshList(); render(); } catch (e) {}
             return;
           }
         } else if (normName(item.reservadoPor) !== normName(name)) {
@@ -1840,7 +2074,7 @@
         mine.delete(item.id);
         sessionStorage.setItem("home-shower-mine", JSON.stringify([...mine]));
         closeModal();
-        try { await load(); } catch (e) {}
+        try { await refreshList(); } catch (e) {}
         render();
         toast("Tu detalle fue devuelto exitosamente.");
       } catch (err) {
@@ -1880,7 +2114,7 @@
       }
       showBusy("Actualizando la lista del hogar…");
       try {
-        await load();
+        await refreshList();
         render();
         toast("Lista actualizada");
       } catch (e) {
@@ -1904,6 +2138,7 @@
         { sel: ".intro-card", variant: null },
         { sel: ".bono-card", variant: null },
         { sel: "#statsBar", variant: null },
+        { sel: ".gallery-head", variant: null },
         { sel: ".controls", variant: null },
         { sel: "#chips", variant: null }
       ];
@@ -1925,7 +2160,11 @@
     (async function start() {
       showBusy("Abriendo las puertas del hogar…");
       try {
-        await load();
+        if (useApi()) {
+          await load();
+        } else {
+          loadLocal();   // MODO PRUEBA VISUAL: lista local, sin tocar la base de datos
+        }
         render();
       } catch (e) {
         console.error(e);
@@ -1943,6 +2182,5 @@
       }
     })();
   </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v3d52b47920f24c319d37e2661827c42b1787588026925" integrity="sha512-d9sL6GJLXn6fInD1+TVXhTcQOsmxeHfmHAvwGDIxp5TO+uo1fiWW7mHomMj4MLRlCsJDTqXzWLHJFFlPCEIj/A==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f"}' crossorigin="anonymous"></script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3490f3e4d83b3e0',t:'MTc4ODMxNTg3OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
