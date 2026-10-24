@@ -38,7 +38,7 @@ Queremos que nos acompañes en este día tan especial. Aquí está tu invitació
 ${card}
 
 Jimena & Daniel
-Domingo 29 de noviembre 2026 · 3:00 p.m.
+Domingo 29 de noviembre 2026 · 3:30 p.m.
 Hacienda Bella Luna Campestre, Tibasosa, Boyacá`;
     case "invitacion-web":
       return `Hola ${quien} 🤍
